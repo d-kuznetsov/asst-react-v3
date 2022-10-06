@@ -1,19 +1,21 @@
-import { useState } from 'react'
-import { createContext } from './../utils'
-import Step from './Step'
+import { useState } from "react";
+import { createContext } from "./../utils";
+import Step from "./Step";
+import { useAsstContext } from "./../context";
 
-const Assistent = ({config}) => {
-  const ctx = createContext(config)
-  const [currentStateId, setCurrentStateId] = useState(ctx.startStepId)
-  const handleStateChange = () => {
-    debugger
-    setCurrentStateId(ctx.steps[ctx.startStepId].next())
-  }
-
-  return <div>
-    <div>{ctx.steps[currentStateId].title}</div>
-    <Step config={ctx.steps[currentStateId]} onNext={handleStateChange}/>
-  </div>
-}
+const Assistent = ({ config }) => {
+  const { asstState } = useAsstContext();
+  const stepConfig = config.steps.find(
+    ({ id }) => asstState.currentStepId === id
+  );
+  return (
+    <div>
+      <div>{asstState.currentStepId}</div>
+      <div>
+        <Step config={stepConfig} />
+      </div>
+    </div>
+  );
+};
 
 export default Assistent;
