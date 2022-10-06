@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+
 import './App.css'
+import Assistent from './components/Assistent'
+import config from './config'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <div className="App">
-      some content
+      <Assistent config={config}/>
     </div>
   )
 }
