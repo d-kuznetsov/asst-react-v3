@@ -1,17 +1,6 @@
-import A from "./base/A";
-import B from "./base/B";
+import Field from './Field'
 import { useAsstContext } from "./../context";
 
-const Field = ({ type }) => {
-  switch (type) {
-    case "CA":
-      return <A />;
-    case "CB":
-      return <B />;
-    default:
-      return <span>Unknown component</span>;
-  }
-};
 
 const Step = ({ config }) => {
   const { dispatch } = useAsstContext();
@@ -26,10 +15,10 @@ const Step = ({ config }) => {
     <div>
       <div>{config.title}</div>
       <div>
-        {config.fields.map((field) => {
+        {config.fields.map((fieldConfig) => {
           return (
-            <div key={field.id}>
-              <Field type={field.type} />
+            <div key={fieldConfig.id}>
+              <Field config={fieldConfig} parentId={config.id}/>
             </div>
           );
         })}
