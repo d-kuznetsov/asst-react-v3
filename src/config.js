@@ -15,6 +15,9 @@ export default {
           type: "CB",
         },
       ],
+      next: () => {
+        return "S2"
+      }
     },
     {
       id: "S2",

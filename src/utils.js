@@ -1,5 +1,11 @@
 export const createContext = (config) => {
   return {
-    currentStepId: config.steps[0].id
+    startStepId: config.steps[0].id,
+    steps: {
+      ...config.steps.reduce((acc, step) => ({
+        ...acc,
+        [step.id]: step,
+      }), {})
+    }
   }
 }
