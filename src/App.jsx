@@ -1,14 +1,14 @@
 import "./App.css";
 import Assistent from "./components/Assistent";
-import { AsstContextProvider } from "./context";
 import config from "./config";
+import ContextProvider from './components/ContextProvider'
 
 function App() {
   return (
     <div className="App">
-      <AsstContextProvider config={config}>
+      <ContextProvider config={config}>
         <Assistent config={config} />
-      </AsstContextProvider>
+      </ContextProvider>
     </div>
   );
 }

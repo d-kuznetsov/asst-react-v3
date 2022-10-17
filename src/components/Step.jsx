@@ -1,5 +1,5 @@
 import Field from "./Field";
-import { useAsstContext } from "./../context";
+import { useAsstContext } from "../context";
 
 const Step = ({ config, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();

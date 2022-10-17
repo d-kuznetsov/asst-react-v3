@@ -1,7 +1,7 @@
 import A from "./base/A";
 import B from "./base/B";
 import CompoundField from "./CompoundField";
-import { useAsstContext } from "./../context";
+import { useAsstContext } from "../context";
 
 const Field = ({ config, nodeId, parentId }) => {
   const { asstState, dispatch } = useAsstContext();

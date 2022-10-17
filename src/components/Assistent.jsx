@@ -1,5 +1,5 @@
 import Step from "./Step";
-import { useAsstContext } from "./../context";
+import { useAsstContext } from "../context";
 
 const Assistent = ({ config }) => {
   const { asstState } = useAsstContext();
