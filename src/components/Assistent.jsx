@@ -1,19 +1,15 @@
-import { useState } from "react";
-import { createContext } from "./../utils";
 import Step from "./Step";
 import { useAsstContext } from "./../context";
 
 const Assistent = ({ config }) => {
   const { asstState } = useAsstContext();
-  const stepConfig = config.steps.find(
-    ({ id }) => asstState.currentStepId === id
-  );
+  const { rootNodeId, currentStepIdx } = asstState;
+  const node = asstState.nodes[rootNodeId];
+  const stepNodeId = node.list[currentStepIdx];
+
   return (
     <div>
-      <div>{asstState.currentStepId}</div>
-      <div>
-        <Step config={stepConfig} />
-      </div>
+      <Step config={config.steps[currentStepIdx]} nodeId={stepNodeId} />
     </div>
   );
 };

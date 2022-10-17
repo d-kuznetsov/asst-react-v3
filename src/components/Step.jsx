@@ -1,31 +1,27 @@
-import Field from './Field'
+import Field from "./Field";
 import { useAsstContext } from "./../context";
 
+const Step = ({ config, nodeId }) => {
+  const { asstState, dispatch } = useAsstContext();
+  const node = asstState.nodes[nodeId];
 
-const Step = ({ config }) => {
-  const { dispatch } = useAsstContext();
-  const handleNext = () => {
-    const nextStepId = config.next();
-    dispatch({
-      type: "SET_CURRENT_STEP_ID",
-      currentStepId: nextStepId,
-    });
-  };
   return (
     <div>
-      <div>{config.title}</div>
       <div>
-        {config.fields.map((fieldConfig) => {
+        {config.title} {nodeId}
+      </div>
+      <div>
+        {config.fields.map((fieldConfig, idx) => {
           return (
             <div key={fieldConfig.id}>
-              <Field config={fieldConfig} parentId={config.id}/>
+              <Field config={fieldConfig} nodeId={node.list[idx]} />
             </div>
           );
         })}
       </div>
-      <div>
+      {/* <div>
         <button onClick={handleNext}>Next</button>
-      </div>
+      </div> */}
     </div>
   );
 };

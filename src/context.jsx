@@ -1,11 +1,41 @@
 import { createContext, useContext, useReducer, useMemo } from "react";
+import { createInitialContext, getId, createNode } from "./context-utils";
 
 const AsstContext = createContext();
 
+const SET_FIELD_VALUE = "SET_FIELD_VALUE";
+const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
+const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
+
 export const useAsstContext = () => useContext(AsstContext);
 
-const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
-const SET_FIELD_VALUE = "SET_FIELD_VALUE";
+const createCompoundField = (state, action) => {
+  const list = [];
+  let nodes = {};
+
+  action.fields.forEach(() => {
+    const id = getId();
+    nodes = {
+      ...nodes,
+      [id]: createNode({ id }),
+    };
+    list.push(id);
+  });
+  const id = getId();
+  nodes[id] = createNode({ id, list });
+
+  return {
+    ...state,
+    nodes: {
+      ...state.nodes,
+      ...nodes,
+      [action.nodeId]: {
+        ...state.nodes[action.nodeId],
+        list: (state.nodes[action.nodeId].list || []).concat(id),
+      },
+    },
+  };
+};
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -14,51 +44,23 @@ const reducer = (state, action) => {
     case SET_FIELD_VALUE:
       return {
         ...state,
-        stepMap: {
-          ...state.stepMap,
-          [action.stepId]: {
-            ...state.stepMap[action.stepId],
-            fieldMap: {
-              ...state.stepMap[action.stepId].fieldMap,
-              [action.fieldId]: {
-                ...state.stepMap[action.stepId].fieldMap[action.fieldId],
-                value: action.value,
-              },
-            },
+        nodes: {
+          ...state.nodes,
+          [action.nodeId]: {
+            ...state.nodes[action.nodeId],
+            value: action.value,
           },
         },
       };
+    case ADD_COMPOUND_FIELD:
+      return createCompoundField(state, action);
     default:
       throw new Error();
   }
 };
 
-const createInitialArgs = (config) => {
-  return {
-    currentStepId: config.steps[0].id,
-    stepMap: config.steps.reduce((asstAcc, step) => {
-      return {
-        ...asstAcc,
-        [step.id]: {
-          ...step,
-          fieldMap: step.fields.reduce((stepAcc, field) => {
-            return {
-              ...stepAcc,
-              [field.id]: {
-                ...field,
-                value: "",
-              },
-            };
-          }, {}),
-        },
-      };
-    }, {}),
-  };
-};
-
 export const AsstContextProvider = ({ children, config }) => {
-  console.log(config);
-  const [state, dispatch] = useReducer(reducer, createInitialArgs(config));
+  const [state, dispatch] = useReducer(reducer, createInitialContext(config));
   const value = useMemo(
     () => ({
       asstState: state,

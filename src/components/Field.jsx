@@ -1,15 +1,16 @@
 import A from "./base/A";
 import B from "./base/B";
+import CompoundField from "./CompoundField";
 import { useAsstContext } from "./../context";
 
-const Field = ({ config, parentId }) => {
+const Field = ({ config, nodeId, parentId }) => {
   const { asstState, dispatch } = useAsstContext();
-  const { value } = asstState.stepMap[parentId].fieldMap[config.id];
+  const node = asstState.nodes[nodeId];
+  const { value } = node;
   const handleUpdate = (value) => {
     dispatch({
       type: "SET_FIELD_VALUE",
-      stepId: parentId,
-      fieldId: config.id,
+      nodeId,
       value,
     });
   };
@@ -19,6 +20,8 @@ const Field = ({ config, parentId }) => {
       return <A value={value} onUpdate={handleUpdate} />;
     case "CB":
       return <B value={value} onUpdate={handleUpdate} />;
+    case "CF":
+      return <CompoundField config={config} Field={Field} nodeId={nodeId} />;
     default:
       return <span>Unknown component</span>;
   }

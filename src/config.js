@@ -14,10 +14,27 @@ export default {
           title: "B field",
           type: "CB",
         },
+        {
+          id: "F1C",
+          title: "C field",
+          type: "CF",
+          fields: [
+            {
+              id: "F1CA",
+              title: "A subfield",
+              type: "CA",
+            },
+            {
+              id: "F1CB",
+              title: "B subfield",
+              type: "CB",
+            },
+          ],
+        },
       ],
       next: () => {
-        return "S2"
-      }
+        return "S2";
+      },
     },
     {
       id: "S2",
