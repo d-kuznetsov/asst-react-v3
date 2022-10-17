@@ -4,6 +4,13 @@ import { useAsstContext } from "../context";
 const Step = ({ config, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
+  const handleNext = () => {
+    const nextStepId = config.next()
+    dispatch({
+      type: "SET_CURRENT_STEP_ID",
+      stepId: nextStepId,
+    })
+  }
 
   return (
     <div>
@@ -19,9 +26,9 @@ const Step = ({ config, nodeId }) => {
           );
         })}
       </div>
-      {/* <div>
+      <div>
         <button onClick={handleNext}>Next</button>
-      </div> */}
+      </div>
     </div>
   );
 };

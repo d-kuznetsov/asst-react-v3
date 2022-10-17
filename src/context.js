@@ -40,7 +40,7 @@ export const createInitialContext = (config) => {
     [id]: createNode({ id, list: rootList }),
   };
   ctx.rootNodeId = id;
-  ctx.currentStepIdx = 0;
+  ctx.currentStepId = config.steps[0].id;
 
   return ctx;
 };
@@ -83,7 +83,7 @@ const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
 export const reducer = (state, action) => {
   switch (action.type) {
     case SET_CURRENT_STEP_ID:
-      return { ...state, currentStepId: action.currentStepId };
+      return { ...state, currentStepId: action.stepId };
     case SET_FIELD_VALUE:
       return {
         ...state,
@@ -104,4 +104,4 @@ export const reducer = (state, action) => {
 
 export const useAsstReducer = (config) => {
   return useReducer(reducer, createInitialContext(config));
-}
+};

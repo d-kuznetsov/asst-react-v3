@@ -3,7 +3,7 @@ import B from "./base/B";
 import CompoundField from "./CompoundField";
 import { useAsstContext } from "../context";
 
-const Field = ({ config, nodeId, parentId }) => {
+const Field = ({ config, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
   const { value } = node;
