@@ -12,6 +12,8 @@ const ContextProvider = ({ children, config }) => {
     [state, dispatch]
   );
 
+  // console.dir(state)
+
   return <AsstContext.Provider value={value}>{children}</AsstContext.Provider>;
 };
 

@@ -1,13 +1,15 @@
 import { createContext, useContext, useReducer } from "react";
+import uniqid from "uniqid";
 
-export const getId = () => Math.floor(Math.random() * 100) + Date.now() + "";
+export const getId = () => uniqid();
 
-export const createNode = ({ id, list }) => {
+export const createNode = ({ id, list, parentId = null }) => {
   return {
     id: id || getId(),
     type: list && list.length ? "group" : "field",
     list: list || null,
     value: list && list.length ? null : "",
+    parentId,
   };
 };
 
@@ -15,31 +17,34 @@ export const createInitialContext = (config) => {
   let ctx = {
     nodes: {},
   };
+
+  const rootId = getId();
   const rootList = [];
   config.steps.forEach((step) => {
     const list = [];
+    let stepId = getId();
+
     step.fields.forEach((field) => {
-      let id = getId();
-      list.push(id);
+      let fieldId = getId();
+      list.push(fieldId);
       ctx.nodes = {
         ...ctx.nodes,
-        [id]: createNode({ id }),
+        [fieldId]: createNode({ id: fieldId, parentId: stepId }),
       };
     });
-    let id = getId();
-    rootList.push(id);
+
+    rootList.push(stepId);
     ctx.nodes = {
       ...ctx.nodes,
-      [id]: createNode({ id, list }),
+      [stepId]: createNode({ id: stepId, list, parentId: rootId }),
     };
   });
 
-  const id = getId();
   ctx.nodes = {
     ...ctx.nodes,
-    [id]: createNode({ id, list: rootList }),
+    [rootId]: createNode({ id: rootId, list: rootList }),
   };
-  ctx.rootNodeId = id;
+  ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
 
   return ctx;
@@ -51,17 +56,17 @@ export const useAsstContext = () => useContext(AsstContext);
 const createCompoundField = (state, action) => {
   const list = [];
   let nodes = {};
+  const groupId = getId();
 
   action.fields.forEach(() => {
     const id = getId();
     nodes = {
       ...nodes,
-      [id]: createNode({ id }),
+      [id]: createNode({ id, parentId: groupId }),
     };
     list.push(id);
   });
-  const id = getId();
-  nodes[id] = createNode({ id, list });
+  nodes[groupId] = createNode({ id: groupId, list, parentId: action.nodeId });
 
   return {
     ...state,
@@ -70,7 +75,7 @@ const createCompoundField = (state, action) => {
       ...nodes,
       [action.nodeId]: {
         ...state.nodes[action.nodeId],
-        list: (state.nodes[action.nodeId].list || []).concat(id),
+        list: (state.nodes[action.nodeId].list || []).concat(groupId),
       },
     },
   };
