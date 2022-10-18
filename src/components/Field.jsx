@@ -37,7 +37,7 @@ const Field = ({ config, nodeId }) => {
     <div>
       <div>{config.title}</div>
       {component}
-      <div className="error">{node.error}</div>
+      {node.error && <div className="error">{node.error}</div>}
     </div>
   );
 };

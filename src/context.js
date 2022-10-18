@@ -23,9 +23,7 @@ const wrapNode = (node, config = {}) => {
       if (key === "error" && config.validate) {
         console.log(config.title, "validate");
         const parentHash = getParentHash(node.id, asstCtxRef.value);
-        return config.validate(node.value, parentHash, asstCtxRef.value)
-          ? "Some error"
-          : "No error";
+        return config.validate(node.value, parentHash, asstCtxRef.value);
       }
       return node[key];
     },

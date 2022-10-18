@@ -8,10 +8,14 @@ export default {
           id: "F1A",
           title: "A field",
           type: "CA",
-          validate: (value, parentContext) => {
-            const result1 = value === "aaa";
-            const result2 = parentContext.F1B === "ccc";
-            return result1 && result2;;
+          validate: (value, parentHash) => {
+            let error = null;
+            if (value === "aaa") {
+              error = "This field must not contaion 'aaa'"
+            } else if (parentHash.F1B === "ccc") {
+              error = "The next field must not contaion 'ccc'"
+            }
+            return error;
           }
         },
         {
@@ -19,8 +23,7 @@ export default {
           title: "B field",
           type: "CB",
           validate: (value) => {
-            const result = value === "bbb"
-            return result;
+            return value === "bbb" ? "This field must not contaion 'bbb'" : null;
           }
         },
         {
