@@ -8,7 +8,7 @@ const Assistent = ({ config }) => {
   const currentStepIdx = config.steps.findIndex(
     ({ id }) => id === currentStepId
   );
-  const stepNodeId = node.list[currentStepIdx];
+  const stepNodeId = node.children[currentStepIdx];
 
   return (
     <div>

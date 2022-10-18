@@ -10,7 +10,7 @@ const asstCtxRef = {
 const getParentHash = (nodeId, asstCtx) => {
   const { parentId } = asstCtx.nodes[nodeId];
   const hash = {};
-  asstCtx.nodes[parentId].list.forEach((childId) => {
+  asstCtx.nodes[parentId].children.forEach((childId) => {
     const { name, value } = asstCtx.nodes[childId];
     hash[name] = value;
   }, {});
@@ -30,12 +30,12 @@ const wrapNode = (node, config = {}) => {
   });
 };
 
-export const createNode = ({ id, list = null, parentId = null, config = null }) => {
+export const createNode = ({ id, children = null, parentId = null, config = null }) => {
   const node = {
     id: id || getId(),
     parentId,
-    list,
-    value: list?.length ? null : "",
+    children,
+    value: children?.length ? null : "",
     name: config?.id || null,
   };
 
@@ -50,12 +50,12 @@ export const createInitialContext = (config) => {
   const rootId = getId();
   const rootList = [];
   config.steps.forEach((step) => {
-    const list = [];
+    const children = [];
     let stepId = getId();
 
     step.fields.forEach((field) => {
       let fieldId = getId();
-      list.push(fieldId);
+      children.push(fieldId);
       ctx.nodes = {
         ...ctx.nodes,
         [fieldId]: createNode({
@@ -70,13 +70,13 @@ export const createInitialContext = (config) => {
     rootList.push(stepId);
     ctx.nodes = {
       ...ctx.nodes,
-      [stepId]: createNode({ id: stepId, list, parentId: rootId }),
+      [stepId]: createNode({ id: stepId, children, parentId: rootId }),
     };
   });
 
   ctx.nodes = {
     ...ctx.nodes,
-    [rootId]: createNode({ id: rootId, list: rootList }),
+    [rootId]: createNode({ id: rootId, children: rootList }),
   };
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
@@ -89,7 +89,7 @@ export const AsstContext = createContext();
 export const useAsstContext = () => useContext(AsstContext);
 
 const createCompoundField = (state, action) => {
-  const list = [];
+  const children = [];
   let nodes = {};
   const groupId = getId();
 
@@ -99,9 +99,9 @@ const createCompoundField = (state, action) => {
       ...nodes,
       [id]: createNode({ id, parentId: groupId, config: field }),
     };
-    list.push(id);
+    children.push(id);
   });
-  nodes[groupId] = createNode({ id: groupId, list, parentId: action.nodeId });
+  nodes[groupId] = createNode({ id: groupId, children, parentId: action.nodeId });
 
   return {
     ...state,
@@ -110,7 +110,7 @@ const createCompoundField = (state, action) => {
       ...nodes,
       [action.nodeId]: wrapNode({
         ...state.nodes[action.nodeId],
-        list: (state.nodes[action.nodeId].list || []).concat(groupId),
+        children: (state.nodes[action.nodeId].children || []).concat(groupId),
       }),
     },
   };

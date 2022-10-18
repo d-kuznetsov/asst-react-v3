@@ -14,8 +14,8 @@ const CompoundField = ({ config, Field, nodeId }) => {
   return (
     <fieldset>
       <div>
-        {node.list &&
-          node.list.map((id) => {
+        {node.children &&
+          node.children.map((id) => {
             return (
               <fieldset key={id}>
                 test
@@ -24,7 +24,7 @@ const CompoundField = ({ config, Field, nodeId }) => {
                     <Field
                       key={fieldConfig.id}
                       config={fieldConfig}
-                      nodeId={asstState.nodes[id].list[idx]}
+                      nodeId={asstState.nodes[id].children[idx]}
                     />
                   );
                 })}

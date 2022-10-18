@@ -21,7 +21,7 @@ const Step = ({ config, nodeId }) => {
         {config.fields.map((fieldConfig, idx) => {
           return (
             <div key={fieldConfig.id}>
-              <Field config={fieldConfig} nodeId={node.list[idx]} />
+              <Field config={fieldConfig} nodeId={node.children[idx]} />
             </div>
           );
         })}
