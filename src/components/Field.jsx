@@ -12,6 +12,7 @@ const Field = ({ config, nodeId }) => {
       type: "SET_FIELD_VALUE",
       nodeId,
       value,
+      config,
     });
   };
 
@@ -36,6 +37,7 @@ const Field = ({ config, nodeId }) => {
     <div>
       <div>{config.title}</div>
       {component}
+      <div className="error">{node.error}</div>
     </div>
   );
 };
