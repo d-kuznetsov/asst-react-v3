@@ -8,11 +8,21 @@ export default {
           id: "F1A",
           title: "A field",
           type: "CA",
+          validate: (value) => {
+            const result = value === "aaa" ? true : false
+            console.log('validate', result);
+            return result;
+          }
         },
         {
           id: "F1B",
           title: "B field",
           type: "CB",
+          validate: (value) => {
+            const result = value === "bbb" ? true : false
+            console.log('validate', result);
+            return result;
+          }
         },
         {
           id: "F1C",

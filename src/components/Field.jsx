@@ -15,16 +15,29 @@ const Field = ({ config, nodeId }) => {
     });
   };
 
+  let component;
   switch (config.type) {
     case "CA":
-      return <A value={value} onUpdate={handleUpdate} />;
+      component = <A value={value} onUpdate={handleUpdate} />;
+      break;
     case "CB":
-      return <B value={value} onUpdate={handleUpdate} />;
+      component = <B value={value} onUpdate={handleUpdate} />;
+      break;
     case "CF":
-      return <CompoundField config={config} Field={Field} nodeId={nodeId} />;
+      component = (
+        <CompoundField config={config} Field={Field} nodeId={nodeId} />
+      );
+      break;
     default:
-      return <span>Unknown component</span>;
+      component = <span>Unknown component</span>;
   }
+
+  return (
+    <div>
+      <div>{config.title}</div>
+      {component}
+    </div>
+  );
 };
 
 export default Field;
