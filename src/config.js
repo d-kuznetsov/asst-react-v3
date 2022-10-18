@@ -35,6 +35,9 @@ export default {
               id: "F1CA",
               title: "A subfield",
               type: "CA",
+              validate: (value) => {
+                return value === "aaa" ? "This field must not contaion 'aaa'" : null;
+              }
             },
             {
               id: "F1CB",
