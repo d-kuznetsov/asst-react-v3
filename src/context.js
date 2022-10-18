@@ -24,13 +24,21 @@ const wrapNode = (node, config = {}) => {
         console.log(config.title, "validate");
         const parentHash = getParentHash(node.id, asstCtxRef.value);
         return config.validate(node.value, parentHash, asstCtxRef.value);
+      } else if (key === "hidden" && config.hide) {
+        const parentHash = getParentHash(node.id, asstCtxRef.value);
+        return config.hide(node.value, parentHash, asstCtxRef.value);
       }
       return node[key];
     },
   });
 };
 
-export const createNode = ({ id, children = null, parentId = null, config = null }) => {
+export const createNode = ({
+  id,
+  children = null,
+  parentId = null,
+  config = null,
+}) => {
   const node = {
     id: id || getId(),
     parentId,
@@ -101,7 +109,11 @@ const createCompoundField = (state, action) => {
     };
     children.push(id);
   });
-  nodes[groupId] = createNode({ id: groupId, children, parentId: action.nodeId });
+  nodes[groupId] = createNode({
+    id: groupId,
+    children,
+    parentId: action.nodeId,
+  });
 
   return {
     ...state,

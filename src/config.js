@@ -24,6 +24,9 @@ export default {
           type: "CB",
           validate: (value) => {
             return value === "bbb" ? "This field must not contaion 'bbb'" : null;
+          },
+          hide: (_, parentHash) => {
+            return parentHash.F1A === "ddd"
           }
         },
         {

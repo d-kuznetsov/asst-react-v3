@@ -34,11 +34,15 @@ const Field = ({ config, nodeId }) => {
   }
 
   return (
-    <div>
-      <div>{config.title}</div>
-      {component}
-      {node.error && <div className="error">{node.error}</div>}
-    </div>
+    <>
+      {!node.hidden && (
+        <div>
+          <div>{config.title}</div>
+          {component}
+          {node.error && <div className="error">{node.error}</div>}
+        </div>
+      )}
+    </>
   );
 };
 
