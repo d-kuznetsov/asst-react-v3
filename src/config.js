@@ -8,10 +8,10 @@ export default {
           id: "F1A",
           title: "A field",
           type: "CA",
-          validate: (value) => {
-            const result = value === "aaa" ? true : false
-            console.log('validate', result);
-            return result;
+          validate: (value, parentContext) => {
+            const result1 = value === "aaa";
+            const result2 = parentContext.F1B === "ccc";
+            return result1 && result2;;
           }
         },
         {
@@ -19,8 +19,7 @@ export default {
           title: "B field",
           type: "CB",
           validate: (value) => {
-            const result = value === "bbb" ? true : false
-            console.log('validate', result);
+            const result = value === "bbb"
             return result;
           }
         },

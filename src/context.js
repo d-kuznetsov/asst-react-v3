@@ -3,14 +3,46 @@ import uniqid from "uniqid";
 
 export const getId = () => uniqid();
 
-export const createNode = ({ id, list, parentId = null }) => {
-  return {
+const asstState = {
+  value: null,
+};
+
+const getParentCtx = (nodeId, ctx) => {
+  const { parentId } = ctx.nodes[nodeId];
+  const res = {};
+  ctx.nodes[parentId].list.forEach((id) => {
+    const { fieldId, value } = ctx.nodes[id];
+    res[fieldId] = value;
+  }, {});
+  return res;
+};
+
+const wrapNode = (obj, config = {}) => {
+  return new Proxy(obj, {
+    get(obj, key) {
+      if (key === "error" && config.validate) {
+        console.log(config.title, "validate");
+        const groupCtx = getParentCtx(obj.id, asstState.value);
+        return config.validate(obj.value, groupCtx, asstState.value)
+          ? "Some error"
+          : "No error";
+      }
+      return obj[key];
+    },
+  });
+};
+
+export const createNode = ({ id, list, parentId = null, config = {} }) => {
+  const obj = {
     id: id || getId(),
     type: list && list.length ? "group" : "field",
     list: list || null,
     value: list && list.length ? null : "",
     parentId,
+    fieldId: config.id || null,
   };
+
+  return wrapNode(obj, config);
 };
 
 export const createInitialContext = (config) => {
@@ -29,7 +61,12 @@ export const createInitialContext = (config) => {
       list.push(fieldId);
       ctx.nodes = {
         ...ctx.nodes,
-        [fieldId]: createNode({ id: fieldId, parentId: stepId }),
+        [fieldId]: createNode({
+          id: fieldId,
+          parentId: stepId,
+          config: field,
+          ctx,
+        }),
       };
     });
 
@@ -47,7 +84,8 @@ export const createInitialContext = (config) => {
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
 
-  return ctx;
+  asstState.value = ctx;
+  return asstState.value;
 };
 
 export const AsstContext = createContext();
@@ -58,11 +96,11 @@ const createCompoundField = (state, action) => {
   let nodes = {};
   const groupId = getId();
 
-  action.fields.forEach(() => {
+  action.fields.forEach((field) => {
     const id = getId();
     nodes = {
       ...nodes,
-      [id]: createNode({ id, parentId: groupId }),
+      [id]: createNode({ id, parentId: groupId, config: field }),
     };
     list.push(id);
   });
@@ -73,10 +111,10 @@ const createCompoundField = (state, action) => {
     nodes: {
       ...state.nodes,
       ...nodes,
-      [action.nodeId]: {
+      [action.nodeId]: wrapNode({
         ...state.nodes[action.nodeId],
         list: (state.nodes[action.nodeId].list || []).concat(groupId),
-      },
+      }),
     },
   };
 };
@@ -86,25 +124,34 @@ const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
 const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
 
 export const reducer = (state, action) => {
+  let newState;
   switch (action.type) {
     case SET_CURRENT_STEP_ID:
-      return { ...state, currentStepId: action.stepId };
+      newState = { ...state, currentStepId: action.stepId };
+      break;
     case SET_FIELD_VALUE:
-      return {
+      newState = {
         ...state,
         nodes: {
           ...state.nodes,
-          [action.nodeId]: {
-            ...state.nodes[action.nodeId],
-            value: action.value,
-          },
+          [action.nodeId]: wrapNode(
+            {
+              ...state.nodes[action.nodeId],
+              value: action.value,
+            },
+            action.config
+          ),
         },
       };
+      break;
     case ADD_COMPOUND_FIELD:
-      return createCompoundField(state, action);
+      newState = createCompoundField(state, action);
+      break;
     default:
       throw new Error();
   }
+  asstState.value = newState;
+  return asstState.value;
 };
 
 export const useAsstReducer = (config) => {
