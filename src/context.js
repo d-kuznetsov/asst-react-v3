@@ -11,8 +11,8 @@ const getParentHash = (nodeId, asstCtx) => {
   const { parentId } = asstCtx.nodes[nodeId];
   const hash = {};
   asstCtx.nodes[parentId].list.forEach((childId) => {
-    const { fieldId, value } = asstCtx.nodes[childId];
-    hash[fieldId] = value;
+    const { name, value } = asstCtx.nodes[childId];
+    hash[name] = value;
   }, {});
   return hash;
 };
@@ -30,17 +30,16 @@ const wrapNode = (node, config = {}) => {
   });
 };
 
-export const createNode = ({ id, list, parentId = null, config = {} }) => {
-  const obj = {
+export const createNode = ({ id, list = null, parentId = null, config = null }) => {
+  const node = {
     id: id || getId(),
-    type: list && list.length ? "group" : "field",
-    list: list || null,
-    value: list && list.length ? null : "",
     parentId,
-    fieldId: config.id || null,
+    list,
+    value: list?.length ? null : "",
+    name: config?.id || null,
   };
 
-  return wrapNode(obj, config);
+  return wrapNode(node, config);
 };
 
 export const createInitialContext = (config) => {
