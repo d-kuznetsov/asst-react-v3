@@ -5,6 +5,9 @@ const Step = ({ config, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
   const handleNext = () => {
+    if (node.error) {
+      return;
+    }
     const nextStepId = config.next()
     dispatch({
       type: "SET_CURRENT_STEP_ID",
@@ -15,7 +18,7 @@ const Step = ({ config, nodeId }) => {
   return (
     <div>
       <div>
-        {config.title} {nodeId}
+        {config.title}
       </div>
       <div>
         {config.fields.map((fieldConfig, idx) => {

@@ -20,8 +20,13 @@ const getParentHash = (nodeId, asstCtx) => {
 const wrapNode = (node, config = {}) => {
   return new Proxy(node, {
     get(node, key) {
-      if (key === "error" && config.validate) {
-        console.log(config.title, "validate");
+      if (key === "error" && (node.children || config.validate)) {
+        console.log(config?.title, "validate");
+        if (node.children) {
+          return node.children.some((childId) => {
+            return asstCtxRef.value.nodes[childId].error;
+          });
+        }
         const parentHash = getParentHash(node.id, asstCtxRef.value);
         return config.validate(node.value, parentHash, asstCtxRef.value);
       } else if (key === "hidden" && config.hide) {
