@@ -3,31 +3,31 @@ import uniqid from "uniqid";
 
 export const getId = () => uniqid();
 
-const asstState = {
+const asstCtxRef = {
   value: null,
 };
 
-const getParentCtx = (nodeId, ctx) => {
-  const { parentId } = ctx.nodes[nodeId];
-  const res = {};
-  ctx.nodes[parentId].list.forEach((id) => {
-    const { fieldId, value } = ctx.nodes[id];
-    res[fieldId] = value;
+const getParentHash = (nodeId, asstCtx) => {
+  const { parentId } = asstCtx.nodes[nodeId];
+  const hash = {};
+  asstCtx.nodes[parentId].list.forEach((childId) => {
+    const { fieldId, value } = asstCtx.nodes[childId];
+    hash[fieldId] = value;
   }, {});
-  return res;
+  return hash;
 };
 
-const wrapNode = (obj, config = {}) => {
-  return new Proxy(obj, {
-    get(obj, key) {
+const wrapNode = (node, config = {}) => {
+  return new Proxy(node, {
+    get(node, key) {
       if (key === "error" && config.validate) {
         console.log(config.title, "validate");
-        const groupCtx = getParentCtx(obj.id, asstState.value);
-        return config.validate(obj.value, groupCtx, asstState.value)
+        const parentHash = getParentHash(node.id, asstCtxRef.value);
+        return config.validate(node.value, parentHash, asstCtxRef.value)
           ? "Some error"
           : "No error";
       }
-      return obj[key];
+      return node[key];
     },
   });
 };
@@ -84,8 +84,8 @@ export const createInitialContext = (config) => {
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
 
-  asstState.value = ctx;
-  return asstState.value;
+  asstCtxRef.value = ctx;
+  return asstCtxRef.value;
 };
 
 export const AsstContext = createContext();
@@ -123,7 +123,7 @@ const SET_FIELD_VALUE = "SET_FIELD_VALUE";
 const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
 const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
 
-export const reducer = (state, action) => {
+export const updateContext = (state, action) => {
   let newState;
   switch (action.type) {
     case SET_CURRENT_STEP_ID:
@@ -150,10 +150,10 @@ export const reducer = (state, action) => {
     default:
       throw new Error();
   }
-  asstState.value = newState;
-  return asstState.value;
+  asstCtxRef.value = newState;
+  return asstCtxRef.value;
 };
 
 export const useAsstReducer = (config) => {
-  return useReducer(reducer, createInitialContext(config));
+  return useReducer(updateContext, createInitialContext(config));
 };
