@@ -6,20 +6,21 @@ const Step = ({ config, nodeId }) => {
   const node = asstState.nodes[nodeId];
   const handleNext = () => {
     if (node.error) {
+      dispatch({
+        type: "SET_TOUCHED",
+      });
       return;
     }
-    const nextStepId = config.next()
+    const nextStepId = config.next();
     dispatch({
       type: "SET_CURRENT_STEP_ID",
       stepId: nextStepId,
-    })
-  }
+    });
+  };
 
   return (
     <div>
-      <div>
-        {config.title}
-      </div>
+      <div>{config.title}</div>
       <div>
         {config.fields.map((fieldConfig, idx) => {
           return (

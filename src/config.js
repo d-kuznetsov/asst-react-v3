@@ -11,23 +11,24 @@ export default {
           validate: (value, parentHash) => {
             let error = null;
             if (value === "aaa") {
-              error = "This field must not contaion 'aaa'"
+              error = "This field must not contaion 'aaa'";
             } else if (parentHash.F1B === "ccc") {
-              error = "The next field must not contaion 'ccc'"
+              error = "The next field must not contaion 'ccc'";
             }
             return error;
-          }
+          },
+          required: true,
         },
         {
           id: "F1B",
           title: "B field",
           type: "CB",
           validate: (value) => {
-            return value === "bbb" ? "This field must not contaion 'bbb'" : null;
+            return value === "" ? "This fieeld is required" : null;
           },
           hide: (_, parentHash) => {
-            return parentHash.F1A === "ddd"
-          }
+            return parentHash.F1A === "ddd";
+          },
         },
         {
           id: "F1C",
@@ -39,8 +40,10 @@ export default {
               title: "A subfield",
               type: "CA",
               validate: (value) => {
-                return value === "aaa" ? "This field must not contaion 'aaa'" : null;
-              }
+                return value === "aaa"
+                  ? "This field must not contaion 'aaa'"
+                  : null;
+              },
             },
             {
               id: "F1CB",
@@ -62,6 +65,9 @@ export default {
           id: "F1C",
           title: "C field",
           type: "CA",
+          validate: (value) => {
+            return value === "" ? "This fieeld is required" : null;
+          },
         },
         {
           id: "F1D",

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import A from "./base/A";
 import B from "./base/B";
 import CompoundField from "./CompoundField";
@@ -6,6 +7,8 @@ import { useAsstContext } from "../context";
 const Field = ({ config, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
+  const [touched, setTouched] = useState(asstState.touchedStep);
+
   const { value } = node;
   const handleUpdate = (value) => {
     dispatch({
@@ -14,6 +17,7 @@ const Field = ({ config, nodeId }) => {
       value,
       config,
     });
+    setTouched(true);
   };
 
   let component;
@@ -39,7 +43,9 @@ const Field = ({ config, nodeId }) => {
         <div>
           <div>{config.title}</div>
           {component}
-          {node.error && <div className="error">{node.error}</div>}
+          {(touched || asstState.touchedStep) && node.error && (
+            <div className="error">{node.error}</div>
+          )}
         </div>
       )}
     </>

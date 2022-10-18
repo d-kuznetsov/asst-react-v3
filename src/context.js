@@ -93,6 +93,7 @@ export const createInitialContext = (config) => {
   };
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
+  ctx.touchedStep = false;
 
   asstCtxRef.value = ctx;
   return asstCtxRef.value;
@@ -136,12 +137,17 @@ const createCompoundField = (state, action) => {
 const SET_FIELD_VALUE = "SET_FIELD_VALUE";
 const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
 const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
+const SET_TOUCHED = "SET_TOUCHED";
 
 export const updateContext = (state, action) => {
   let newState;
   switch (action.type) {
     case SET_CURRENT_STEP_ID:
-      newState = { ...state, currentStepId: action.stepId };
+      newState = { 
+        ...state, 
+        currentStepId: action.stepId,
+        touchedStep: false,
+      };
       break;
     case SET_FIELD_VALUE:
       newState = {
@@ -160,6 +166,12 @@ export const updateContext = (state, action) => {
       break;
     case ADD_COMPOUND_FIELD:
       newState = createCompoundField(state, action);
+      break;
+    case SET_TOUCHED:
+      newState = {
+        ...state,
+        touchedStep: true,
+      };
       break;
     default:
       throw new Error();
