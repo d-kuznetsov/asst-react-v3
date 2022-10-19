@@ -94,6 +94,7 @@ export const createInitialContext = (config) => {
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
   ctx.touchedStep = false;
+  ctx.stepHistory = [];
 
   asstCtxRef.value = ctx;
   return asstCtxRef.value;
@@ -143,10 +144,11 @@ export const updateContext = (state, action) => {
   let newState;
   switch (action.type) {
     case SET_CURRENT_STEP_ID:
-      newState = { 
-        ...state, 
+      newState = {
+        ...state,
         currentStepId: action.stepId,
         touchedStep: false,
+        stepHistory: [...state.stepHistory, state.currentStepId],
       };
       break;
     case SET_FIELD_VALUE:
