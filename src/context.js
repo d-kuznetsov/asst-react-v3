@@ -139,6 +139,7 @@ const SET_FIELD_VALUE = "SET_FIELD_VALUE";
 const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
 const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
 const SET_TOUCHED = "SET_TOUCHED";
+const STEP_BACK = "STEP_BACK"
 
 export const updateContext = (state, action) => {
   let newState;
@@ -149,6 +150,14 @@ export const updateContext = (state, action) => {
         currentStepId: action.stepId,
         touchedStep: false,
         stepHistory: [...state.stepHistory, state.currentStepId],
+      };
+      break;
+    case STEP_BACK:
+      newState = {
+        ...state,
+        currentStepId: state.stepHistory.at(-1),
+        touchedStep: false,
+        stepHistory: state.stepHistory.slice(0, -1),
       };
       break;
     case SET_FIELD_VALUE:

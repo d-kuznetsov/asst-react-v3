@@ -18,6 +18,12 @@ const Step = ({ config, nodeId }) => {
     });
   };
 
+  const handleBack = () => {
+    dispatch({
+      type: "STEP_BACK",
+    });
+  }
+
   return (
     <div>
       <div>{config.title}</div>
@@ -31,6 +37,7 @@ const Step = ({ config, nodeId }) => {
         })}
       </div>
       <div>
+        {!!asstState.stepHistory.length && <button onClick={handleBack}>Prev</button>}
         <button onClick={handleNext}>Next</button>
       </div>
     </div>
