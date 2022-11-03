@@ -135,11 +135,37 @@ const createCompoundField = (state, action) => {
   };
 };
 
+const deleteCompoundField = (state, action) => {
+  const { nodeId } = action;
+  const { parentId } = state.nodes[nodeId];
+  const nodesToDelete = [nodeId, ...state.nodes[nodeId].children];
+  let newNodes = { ...state.nodes };
+  nodesToDelete.forEach((nodeId) => {
+    delete newNodes[nodeId];
+  });
+
+  newNodes = {
+    ...newNodes,
+    [parentId]: wrapNode({
+      ...newNodes[parentId],
+      children: newNodes[parentId].children.filter(
+        (childId) => childId !== nodeId
+      ),
+    }),
+  };
+
+  return {
+    ...state,
+    nodes: newNodes,
+  };
+};
+
 const SET_FIELD_VALUE = "SET_FIELD_VALUE";
 const SET_CURRENT_STEP_ID = "SET_CURRENT_STEP_ID";
 const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
 const SET_TOUCHED = "SET_TOUCHED";
-const STEP_BACK = "STEP_BACK"
+const STEP_BACK = "STEP_BACK";
+const DELETE_COMPOUND_FIELD = "DELETE_COMPOUND_FIELD";
 
 export const updateContext = (state, action) => {
   let newState;
@@ -177,6 +203,9 @@ export const updateContext = (state, action) => {
       break;
     case ADD_COMPOUND_FIELD:
       newState = createCompoundField(state, action);
+      break;
+    case DELETE_COMPOUND_FIELD:
+      newState = deleteCompoundField(state, action);
       break;
     case SET_TOUCHED:
       newState = {

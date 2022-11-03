@@ -11,6 +11,14 @@ const CompoundField = ({ config, Field, nodeId }) => {
     });
   };
 
+  const handleDelete = (nodeId) => {
+    debugger;
+    dispatch({
+      type: "DELETE_COMPOUND_FIELD",
+      nodeId,
+    });
+  }
+
   return (
     <fieldset>
       <div>
@@ -18,7 +26,7 @@ const CompoundField = ({ config, Field, nodeId }) => {
           node.children.map((id) => {
             return (
               <fieldset key={id}>
-                test
+                <button onClick={() => handleDelete(id)}>X</button>
                 {config.fields.map((fieldConfig, idx) => {
                   return (
                     <Field
