@@ -11,9 +11,7 @@ const ContextProvider = ({ children, config }) => {
     }),
     [state, dispatch]
   );
-
-  // console.dir(state)
-
+  // console.log('stepHistory', value.asstState.stepHistory)
   return <AsstContext.Provider value={value}>{children}</AsstContext.Provider>;
 };
 

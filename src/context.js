@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import uniqid from "uniqid";
-import { getFieldDefaultValue } from './field-types'
+import { getFieldDefaultValue } from "./field-types";
 
 export const getId = () => uniqid();
 
@@ -25,7 +25,7 @@ const getHash = (nodeId, asstCtx) => {
     hash[name] = value;
   });
   return hash;
-}
+};
 
 const wrapNode = (node, config = {}) => {
   return new Proxy(node, {
@@ -42,7 +42,7 @@ const wrapNode = (node, config = {}) => {
         const parentHash = getParentHash(node.id, asstCtxRef.value);
         return config.hide(node.value, parentHash, asstCtxRef.value);
       } else if (key === "hash") {
-        return getHash(node.id, asstCtxRef.value)
+        return getHash(node.id, asstCtxRef.value);
       }
       return node[key];
     },
@@ -221,6 +221,7 @@ const ADD_COMPOUND_FIELD = "ADD_COMPOUND_FIELD";
 const SET_TOUCHED = "SET_TOUCHED";
 const STEP_BACK = "STEP_BACK";
 const DELETE_COMPOUND_FIELD = "DELETE_COMPOUND_FIELD";
+const EDIT_STEP = "EDIT_STEP";
 
 export const updateContext = (state, action) => {
   let newState;
@@ -239,6 +240,17 @@ export const updateContext = (state, action) => {
         currentStepId: state.stepHistory.at(-1),
         touchedStep: false,
         stepHistory: state.stepHistory.slice(0, -1),
+      };
+      break;
+    case EDIT_STEP:
+      newState = {
+        ...state,
+        currentStepId: action.stepId,
+        touchedStep: false,
+        stepHistory: state.stepHistory.slice(
+          0,
+          state.stepHistory.findIndex((stepId) => stepId === action.stepId)
+        ),
       };
       break;
     case SET_FIELD_VALUE:
