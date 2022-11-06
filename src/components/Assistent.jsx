@@ -1,5 +1,6 @@
-import StepIndicator from './StepIndicator'
+import StepIndicator from "./StepIndicator";
 import Step from "./Step";
+import Overview from "./Overview";
 import { useAsstContext } from "../context";
 
 const Assistent = ({ config }) => {
@@ -10,11 +11,19 @@ const Assistent = ({ config }) => {
     ({ id }) => id === currentStepId
   );
   const stepNodeId = node.children[currentStepIdx];
+  const stepConfig = config.steps[currentStepIdx];
+  const { type: stepType } = stepConfig;
 
   return (
     <div>
       <StepIndicator config={config} />
-      <Step config={config.steps[currentStepIdx]} nodeId={stepNodeId} />
+      {stepType === "STEP_TYPE_DONE" ? (
+        <div>Done</div>
+      ) : stepType === "STEP_TYPE_OVERVIEW" ? (
+        <Overview config={config} />
+      ) : (
+        <Step config={stepConfig} nodeId={stepNodeId} />
+      )}
     </div>
   );
 };

@@ -112,35 +112,44 @@ export const createInitialContext = (config) => {
 
   const rootId = getId();
   const rootList = [];
-  config.steps.forEach((step) => {
-    const children = [];
-    let stepId = getId();
+  config.steps
+    .filter(({ type = "STEP_TYPE_DATA_COLLECTION" }) => {
+      return type === "STEP_TYPE_DATA_COLLECTION";
+    })
+    .forEach((step) => {
+      const children = [];
+      let stepId = getId();
 
-    step.fields.forEach((field) => {
-      if (field.options?.atLeastOne) {
-        const compoundFieldId = createCompoundFieldNodes(ctx, field, stepId);
-        children.push(compoundFieldId);
-      } else {
-        const fieldId = getId();
-        children.push(fieldId);
-        ctx.nodes = {
-          ...ctx.nodes,
-          [fieldId]: createNode({
-            id: fieldId,
-            parentId: stepId,
-            config: field,
-            ctx,
-          }),
-        };
-      }
+      step.fields.forEach((field) => {
+        if (field.options?.atLeastOne) {
+          const compoundFieldId = createCompoundFieldNodes(ctx, field, stepId);
+          children.push(compoundFieldId);
+        } else {
+          const fieldId = getId();
+          children.push(fieldId);
+          ctx.nodes = {
+            ...ctx.nodes,
+            [fieldId]: createNode({
+              id: fieldId,
+              parentId: stepId,
+              config: field,
+              ctx,
+            }),
+          };
+        }
+      });
+
+      rootList.push(stepId);
+      ctx.nodes = {
+        ...ctx.nodes,
+        [stepId]: createNode({
+          id: stepId,
+          children,
+          parentId: rootId,
+          config,
+        }),
+      };
     });
-
-    rootList.push(stepId);
-    ctx.nodes = {
-      ...ctx.nodes,
-      [stepId]: createNode({ id: stepId, children, parentId: rootId }),
-    };
-  });
 
   ctx.nodes = {
     ...ctx.nodes,

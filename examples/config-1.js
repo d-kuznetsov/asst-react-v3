@@ -1,6 +1,6 @@
 // Step transitions
 
-import { FIELD_TYPES } from '../src/field-types';
+import { FIELD_TYPES } from "../src/field-types";
 
 export default {
   steps: [
@@ -11,12 +11,12 @@ export default {
         {
           id: "f1",
           title: "Go to 3th step?",
-          type: FIELD_TYPES.CHECKBOX
-        }
+          type: FIELD_TYPES.CHECKBOX,
+        },
       ],
       next: (hash) => {
-        return hash.f1 ? "S3" : "S2"
-      }
+        return hash.f1 ? "S3" : "S2";
+      },
     },
     {
       id: "S2",
@@ -25,9 +25,12 @@ export default {
         {
           id: "f1",
           title: "Field 1",
-          type: FIELD_TYPES.CHECKBOX
-        }
+          type: FIELD_TYPES.CHECKBOX,
+        },
       ],
+      next: () => {
+        return "S3";
+      },
     },
     {
       id: "S3",
@@ -36,9 +39,29 @@ export default {
         {
           id: "f1",
           title: "Field 1",
-          type: FIELD_TYPES.CHECKBOX
-        }
-      ]
+          type: FIELD_TYPES.TEXT,
+        },
+        {
+          id: "f2",
+          title: "Field 2",
+          type: FIELD_TYPES.COMPOUND,
+          fields: [
+            {
+              id: "f1",
+              title: "Subfield 1",
+              type: FIELD_TYPES.TEXT,
+            },
+            {
+              id: "f2",
+              title: "Subfield 2",
+              type: FIELD_TYPES.CHECKBOX,
+            },
+          ],
+        },
+      ],
+      next: () => {
+        return "S5";
+      },
     },
     {
       id: "S4",
@@ -47,20 +70,22 @@ export default {
         {
           id: "f1",
           title: "Field 1",
-          type: FIELD_TYPES.CHECKBOX
-        }
-      ]
+          type: FIELD_TYPES.CHECKBOX,
+        },
+      ],
+      next: () => {
+        return "S5";
+      },
     },
     {
       id: "S5",
-      title: "Step 5",
-      fields: [
-        {
-          id: "f1",
-          title: "Field 1",
-          type: FIELD_TYPES.CHECKBOX
-        }
-      ]
+      title: "Overview",
+      type: "STEP_TYPE_OVERVIEW",
+    },
+    {
+      id: "done",
+      title: "Done",
+      type: "STEP_TYPE_DONE",
     },
   ],
 };
