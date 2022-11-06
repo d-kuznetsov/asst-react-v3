@@ -14,15 +14,23 @@ const getParentHash = (nodeId, asstCtx) => {
   asstCtx.nodes[parentId].children.forEach((childId) => {
     const { name, value } = asstCtx.nodes[childId];
     hash[name] = value;
-  }, {});
+  });
   return hash;
 };
+
+const getHash = (nodeId, asstCtx) => {
+  const hash = {};
+  asstCtx.nodes[nodeId].children.forEach((childId) => {
+    const { name, value } = asstCtx.nodes[childId];
+    hash[name] = value;
+  });
+  return hash;
+}
 
 const wrapNode = (node, config = {}) => {
   return new Proxy(node, {
     get(node, key) {
       if (key === "error" && (node.children || config.validate)) {
-        console.log(config?.title, "validate");
         if (node.children) {
           return node.children.some((childId) => {
             return asstCtxRef.value.nodes[childId].error;
@@ -33,6 +41,8 @@ const wrapNode = (node, config = {}) => {
       } else if (key === "hidden" && config.hide) {
         const parentHash = getParentHash(node.id, asstCtxRef.value);
         return config.hide(node.value, parentHash, asstCtxRef.value);
+      } else if (key === "hash") {
+        return getHash(node.id, asstCtxRef.value)
       }
       return node[key];
     },

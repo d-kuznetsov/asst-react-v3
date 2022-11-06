@@ -11,7 +11,7 @@ const Step = ({ config, nodeId }) => {
       });
       return;
     }
-    const nextStepId = config.next();
+    const nextStepId = config.next(node.hash);
     dispatch({
       type: "SET_CURRENT_STEP_ID",
       stepId: nextStepId,
