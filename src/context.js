@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import uniqid from "uniqid";
+import { getFieldDefaultValue } from './field-types'
 
 export const getId = () => uniqid();
 
@@ -48,7 +49,7 @@ export const createNode = ({
     id: id || getId(),
     parentId,
     children,
-    value: children?.length ? null : "",
+    value: children?.length ? null : getFieldDefaultValue(config.type),
     name: config?.id || null,
   };
 

@@ -1,3 +1,5 @@
+import { FIELD_TYPES } from './field-types'
+
 export default {
   steps: [
     {
@@ -7,7 +9,7 @@ export default {
         {
           id: "F1A",
           title: "A field",
-          type: "CA",
+          type: FIELD_TYPES.TEXT,
           validate: (value, parentHash) => {
             let error = null;
             if (value === "aaa") {
@@ -22,10 +24,7 @@ export default {
         {
           id: "F1B",
           title: "B field",
-          type: "CB",
-          validate: (value) => {
-            return value === "" ? "This fieeld is required" : null;
-          },
+          type: FIELD_TYPES.CHECKBOX,
           hide: (_, parentHash) => {
             return parentHash.F1A === "ddd";
           },
@@ -33,7 +32,7 @@ export default {
         {
           id: "F1C",
           title: "C field",
-          type: "CF",
+          type: FIELD_TYPES.COMPOUND,
           options: {
             atLeastOne: true
           },
@@ -41,7 +40,7 @@ export default {
             {
               id: "F1CA",
               title: "A subfield",
-              type: "CA",
+              type: FIELD_TYPES.TEXT,
               validate: (value) => {
                 return value === "aaa"
                   ? "This field must not contaion 'aaa'"
@@ -51,7 +50,7 @@ export default {
             {
               id: "F1CB",
               title: "B subfield",
-              type: "CB",
+              type: FIELD_TYPES.CHECKBOX,
             },
           ],
         },
@@ -67,7 +66,7 @@ export default {
         {
           id: "F1C",
           title: "C field",
-          type: "CA",
+          type: FIELD_TYPES.TEXT,
           validate: (value) => {
             return value === "" ? "This fieeld is required" : null;
           },
@@ -75,7 +74,7 @@ export default {
         {
           id: "F1D",
           title: "D field",
-          type: "CB",
+          type: FIELD_TYPES.CHECKBOX,
         },
       ],
     },

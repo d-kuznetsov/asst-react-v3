@@ -1,9 +1,9 @@
 import { useState } from "react";
-import A from "./base/A";
-import B from "./base/B";
-import TextField from './base/TextField'
+import TextField from "./base/TextField";
+import Checkbox from "./base/Checkbox";
 import CompoundField from "./CompoundField";
 import { useAsstContext } from "../context";
+import { FIELD_TYPES } from "../field-types";
 
 const Field = ({ config, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
@@ -22,14 +22,15 @@ const Field = ({ config, nodeId }) => {
   };
 
   let component;
+
   switch (config.type) {
-    case "CA":
+    case FIELD_TYPES.TEXT:
       component = <TextField value={value} onUpdate={handleUpdate} />;
       break;
-    case "CB":
-      component = <B value={value} onUpdate={handleUpdate} />;
+    case FIELD_TYPES.CHECKBOX:
+      component = <Checkbox value={value} onUpdate={handleUpdate} />;
       break;
-    case "CF":
+    case FIELD_TYPES.COMPOUND:
       component = (
         <CompoundField config={config} Field={Field} nodeId={nodeId} />
       );

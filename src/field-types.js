@@ -1,0 +1,43 @@
+const FIELD_TYPE_TEXT = "FIELD_TYPE_TEXT";
+const FIELD_TYPE_SELECT = "FIELD_TYPE_SELECT";
+const FIELD_TYPE_RADIO_GROUP = "FIELD_TYPE_RADIO_GROUP";
+const FIELD_TYPE_CHECKBOX = "FIELD_TYPE_CHECKBOX";
+const FIELD_TYPE_SLIDER = "FIELD_TYPE_SLIDER";
+const FIELD_TYPE_CHECKBOX_GROUP = "FIELD_TYPE_CHECKBOX_GROUP";
+const FIELD_TYPE_FILE_UPLOAD = "FIELD_TYPE_FILE_UPLOAD";
+const FIELD_TYPE_DATE = "FIELD_TYPE_DATE";
+const FIELD_TYPE_COMPOUND = "FIELD_TYPE_COMPOUND";
+
+export const FIELD_TYPES = {
+  TEXT: FIELD_TYPE_TEXT,
+  SELECT: FIELD_TYPE_SELECT,
+  RADIO_GROUP: FIELD_TYPE_RADIO_GROUP,
+  CHECKBOX: FIELD_TYPE_CHECKBOX,
+  SLIDER: FIELD_TYPE_SLIDER,
+  CHECKBOX_GROUP: FIELD_TYPE_CHECKBOX_GROUP,
+  FILE_UPLOAD: FIELD_TYPE_FILE_UPLOAD,
+  DATE: FIELD_TYPE_DATE,
+  COMPOUND: FIELD_TYPE_COMPOUND,
+};
+
+export const getFieldDefaultValue = (fieldType) => {
+  switch(fieldType) {
+    case FIELD_TYPES.TEXT:
+    case FIELD_TYPES.SELECT:
+    case FIELD_TYPES.RADIO_GROUP:
+      return "";
+    case FIELD_TYPES.CHECKBOX:
+      return false;
+    case FIELD_TYPES.SLIDER:
+      return 0;
+    case FIELD_TYPES.CHECKBOX_GROUP:
+      return {};
+    case FIELD_TYPES.FILE_UPLOAD:
+      return [];
+    case FIELD_TYPES.DATE:
+      return null;
+    default:
+      return "unknown field type";
+      //throw Error("Unknown field type")
+  }
+}
