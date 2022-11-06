@@ -1,3 +1,4 @@
+import StepIndicator from './StepIndicator'
 import Step from "./Step";
 import { useAsstContext } from "../context";
 
@@ -12,6 +13,7 @@ const Assistent = ({ config }) => {
 
   return (
     <div>
+      <StepIndicator config={config} />
       <Step config={config.steps[currentStepIdx]} nodeId={stepNodeId} />
     </div>
   );
