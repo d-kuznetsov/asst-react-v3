@@ -55,6 +55,49 @@ export const createNode = ({
   return wrapNode(node, config);
 };
 
+const createCompoundFieldNodes = (ctx, compoundFiled, parentId) => {
+  const fieldNodes = [];
+  const fieldNodesItemId = getId()
+  compoundFiled.fields.forEach((field) => {
+    let fieldId = getId();
+    fieldNodes.push(fieldId);
+    ctx.nodes = {
+      ...ctx.nodes,
+      [fieldId]: createNode({
+        id: fieldId,
+        parentId: fieldNodesItemId,
+        config: field,
+        ctx,
+      }),
+    };
+  });
+
+  const topLevelNodeId = getId();
+
+  ctx.nodes = {
+    ...ctx.nodes,
+    [fieldNodesItemId]: createNode({
+      id: fieldNodesItemId,
+      parentId: topLevelNodeId,
+      children: fieldNodes,
+      ctx,
+    }),
+  };
+
+  ctx.nodes = {
+    ...ctx.nodes,
+    [topLevelNodeId]: createNode({
+      id: topLevelNodeId,
+      parentId: parentId,
+      children: [fieldNodesItemId],
+      config: compoundFiled,
+      ctx,
+    }),
+  };
+
+  return topLevelNodeId
+}
+
 export const createInitialContext = (config) => {
   let ctx = {
     nodes: {},
@@ -67,17 +110,22 @@ export const createInitialContext = (config) => {
     let stepId = getId();
 
     step.fields.forEach((field) => {
-      let fieldId = getId();
-      children.push(fieldId);
-      ctx.nodes = {
-        ...ctx.nodes,
-        [fieldId]: createNode({
-          id: fieldId,
-          parentId: stepId,
-          config: field,
-          ctx,
-        }),
-      };
+      if (field.options?.atLeastOne) {
+        const fieldId = createCompoundFieldNodes(ctx, field, stepId);
+        children.push(fieldId);
+      } else {
+        let fieldId = getId();
+        children.push(fieldId);
+        ctx.nodes = {
+          ...ctx.nodes,
+          [fieldId]: createNode({
+            id: fieldId,
+            parentId: stepId,
+            config: field,
+            ctx,
+          }),
+        };
+      }
     });
 
     rootList.push(stepId);

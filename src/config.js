@@ -34,6 +34,9 @@ export default {
           id: "F1C",
           title: "C field",
           type: "CF",
+          options: {
+            atLeastOne: true
+          },
           fields: [
             {
               id: "F1CA",

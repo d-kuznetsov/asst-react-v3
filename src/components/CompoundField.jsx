@@ -12,7 +12,6 @@ const CompoundField = ({ config, Field, nodeId }) => {
   };
 
   const handleDelete = (nodeId) => {
-    debugger;
     dispatch({
       type: "DELETE_COMPOUND_FIELD",
       nodeId,
