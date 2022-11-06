@@ -1,6 +1,7 @@
 import { useState } from "react";
 import A from "./base/A";
 import B from "./base/B";
+import TextField from './base/TextField'
 import CompoundField from "./CompoundField";
 import { useAsstContext } from "../context";
 
@@ -23,7 +24,7 @@ const Field = ({ config, nodeId }) => {
   let component;
   switch (config.type) {
     case "CA":
-      component = <A value={value} onUpdate={handleUpdate} />;
+      component = <TextField value={value} onUpdate={handleUpdate} />;
       break;
     case "CB":
       component = <B value={value} onUpdate={handleUpdate} />;
