@@ -55,48 +55,44 @@ export const createNode = ({
   return wrapNode(node, config);
 };
 
-const createCompoundFieldNodes = (ctx, compoundFiled, parentId) => {
-  const fieldNodes = [];
-  const fieldNodesItemId = getId()
-  compoundFiled.fields.forEach((field) => {
+const createCompoundFieldNodes = (ctx, compoundField, stepId) => {
+  const listId = getId();
+  const listItemId = getId();
+  const listItemChildren = [];
+
+  compoundField.fields.forEach((fieldConfig) => {
     let fieldId = getId();
-    fieldNodes.push(fieldId);
+    listItemChildren.push(fieldId);
     ctx.nodes = {
       ...ctx.nodes,
       [fieldId]: createNode({
         id: fieldId,
-        parentId: fieldNodesItemId,
-        config: field,
+        parentId: listItemId,
+        config: fieldConfig,
         ctx,
       }),
     };
   });
 
-  const topLevelNodeId = getId();
-
   ctx.nodes = {
     ...ctx.nodes,
-    [fieldNodesItemId]: createNode({
-      id: fieldNodesItemId,
-      parentId: topLevelNodeId,
-      children: fieldNodes,
+    [listItemId]: createNode({
+      id: listItemId,
+      parentId: listId,
+      children: listItemChildren,
+      ctx,
+    }),
+    [listId]: createNode({
+      id: listId,
+      parentId: stepId,
+      children: [listItemId],
+      config: compoundField,
       ctx,
     }),
   };
 
-  ctx.nodes = {
-    ...ctx.nodes,
-    [topLevelNodeId]: createNode({
-      id: topLevelNodeId,
-      parentId: parentId,
-      children: [fieldNodesItemId],
-      config: compoundFiled,
-      ctx,
-    }),
-  };
-
-  return topLevelNodeId
-}
+  return listId;
+};
 
 export const createInitialContext = (config) => {
   let ctx = {
@@ -111,10 +107,10 @@ export const createInitialContext = (config) => {
 
     step.fields.forEach((field) => {
       if (field.options?.atLeastOne) {
-        const fieldId = createCompoundFieldNodes(ctx, field, stepId);
-        children.push(fieldId);
+        const compoundFieldId = createCompoundFieldNodes(ctx, field, stepId);
+        children.push(compoundFieldId);
       } else {
-        let fieldId = getId();
+        const fieldId = getId();
         children.push(fieldId);
         ctx.nodes = {
           ...ctx.nodes,
