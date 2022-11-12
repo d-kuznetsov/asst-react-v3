@@ -24,7 +24,7 @@ const FieldOverview = ({ config, node }) => {
     case FIELD_TYPES.COMPOUND:
       view = (
         <div>
-          {node.children.map((listItemId) => {
+          {node.children?.map((listItemId) => {
             return (
               <fieldset key={listItemId}>
                 {config.fields.map((subfield, idx) => {
