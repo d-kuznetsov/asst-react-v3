@@ -20,7 +20,7 @@ const Assistent = ({ config }) => {
       {stepType === "STEP_TYPE_DONE" ? (
         <div>Done</div>
       ) : stepType === "STEP_TYPE_OVERVIEW" ? (
-        <Overview config={config} />
+        <Overview asstConfig={config} stepConfig={stepConfig}/>
       ) : (
         <Step config={stepConfig} nodeId={stepNodeId} />
       )}

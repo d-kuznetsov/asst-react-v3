@@ -81,6 +81,9 @@ export default {
       id: "S5",
       title: "Overview",
       type: "STEP_TYPE_OVERVIEW",
+      next: () => {
+        return "done";
+      },
     },
     {
       id: "done",
