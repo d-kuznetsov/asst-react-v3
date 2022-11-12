@@ -91,6 +91,7 @@ const createCompoundFieldNodes = (ctx, compoundField, stepId) => {
       id: listItemId,
       parentId: listId,
       children: listItemChildren,
+      // ??? config
       ctx,
     }),
     [listId]: createNode({
@@ -153,7 +154,11 @@ export const createInitialContext = (config) => {
 
   ctx.nodes = {
     ...ctx.nodes,
-    [rootId]: createNode({ id: rootId, children: rootList }),
+    [rootId]: createNode({ 
+      id: rootId, 
+      children: rootList,
+      // config
+    }), 
   };
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
@@ -184,6 +189,7 @@ const createCompoundField = (state, action) => {
     id: groupId,
     children,
     parentId: action.nodeId,
+    // config
   });
 
   return {
