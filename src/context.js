@@ -116,12 +116,24 @@ export const createInitialContext = (config) => {
   const rootId = getId();
   const rootList = [];
   config.steps
-    .filter(({ type = "STEP_TYPE_DATA_COLLECTION" }) => {
-      return type === "STEP_TYPE_DATA_COLLECTION";
-    })
     .forEach((step) => {
       const children = [];
       let stepId = getId();
+
+      if (
+        step.type === "STEP_TYPE_OVERVIEW" ||
+        step.type === "STEP_TYPE_DONE"
+      ) {
+        ctx.nodes = {
+          ...ctx.nodes,
+          [stepId]: createNode({
+            id: stepId,
+            config: step,
+          }),
+        };
+        rootList.push(stepId)
+        return;
+      }
 
       step.fields.forEach((field) => {
         if (field.options?.atLeastOne) {
@@ -156,11 +168,11 @@ export const createInitialContext = (config) => {
 
   ctx.nodes = {
     ...ctx.nodes,
-    [rootId]: createNode({ 
-      id: rootId, 
+    [rootId]: createNode({
+      id: rootId,
       children: rootList,
-      config
-    }), 
+      config,
+    }),
   };
   ctx.rootNodeId = rootId;
   ctx.currentStepId = config.steps[0].id;
@@ -177,7 +189,7 @@ export const useAsstContext = () => useContext(AsstContext);
 const createCompoundField = (state, action) => {
   const children = [];
   let nodes = {};
-  const rootNode =  state.nodes[action.nodeId]
+  const rootNode = state.nodes[action.nodeId];
   const groupId = getId();
 
   rootNode.config.fields.forEach((field) => {
@@ -282,7 +294,7 @@ export const updateContext = (state, action) => {
               ...state.nodes[action.nodeId],
               value: action.value,
             },
-            state.nodes[action.nodeId].config,
+            state.nodes[action.nodeId].config
           ),
         },
       };

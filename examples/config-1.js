@@ -60,7 +60,7 @@ export default {
         },
       ],
       next: () => {
-        return "S5";
+        return "overview";
       },
     },
     {
@@ -74,11 +74,11 @@ export default {
         },
       ],
       next: () => {
-        return "S5";
+        return "overview";
       },
     },
     {
-      id: "S5",
+      id: "overview",
       title: "Overview",
       type: "STEP_TYPE_OVERVIEW",
       next: () => {
