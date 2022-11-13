@@ -1,13 +1,12 @@
 import { useAsstContext } from "../context";
 
-const CompoundField = ({ config, Field, nodeId }) => {
+const CompoundField = ({ Field, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
   const handleAdd = () => {
     dispatch({
       type: "ADD_COMPOUND_FIELD",
       nodeId,
-      fields: config.fields,
     });
   };
 
@@ -26,12 +25,11 @@ const CompoundField = ({ config, Field, nodeId }) => {
             return (
               <fieldset key={id}>
                 <button onClick={() => handleDelete(id)}>X</button>
-                {config.fields.map((fieldConfig, idx) => {
+                {asstState.nodes[id].children.map((id) => {
                   return (
                     <Field
-                      key={fieldConfig.id}
-                      config={fieldConfig}
-                      nodeId={asstState.nodes[id].children[idx]}
+                      key={id}
+                      nodeId={id}
                     />
                   );
                 })}

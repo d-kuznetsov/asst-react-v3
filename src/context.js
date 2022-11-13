@@ -27,7 +27,7 @@ const getHash = (nodeId, asstCtx) => {
   return hash;
 };
 
-const wrapNode = (node, config = {}) => {
+const wrapNode = (node, config = null) => {
   return new Proxy(node, {
     get(node, key) {
       if (key === "error" && (node.children || config.validate)) {
@@ -38,11 +38,13 @@ const wrapNode = (node, config = {}) => {
         }
         const parentHash = getParentHash(node.id, asstCtxRef.value);
         return config.validate(node.value, parentHash, asstCtxRef.value);
-      } else if (key === "hidden" && config.hide) {
+      } else if (key === "hidden" && config?.hide) {
         const parentHash = getParentHash(node.id, asstCtxRef.value);
         return config.hide(node.value, parentHash, asstCtxRef.value);
       } else if (key === "hash") {
         return getHash(node.id, asstCtxRef.value);
+      } else if (key === "config" && config) {
+        return config;
       }
       return node[key];
     },
@@ -147,7 +149,7 @@ export const createInitialContext = (config) => {
           id: stepId,
           children,
           parentId: rootId,
-          config,
+          config: step,
         }),
       };
     });
@@ -175,9 +177,10 @@ export const useAsstContext = () => useContext(AsstContext);
 const createCompoundField = (state, action) => {
   const children = [];
   let nodes = {};
+  const rootNode =  state.nodes[action.nodeId]
   const groupId = getId();
 
-  action.fields.forEach((field) => {
+  rootNode.config.fields.forEach((field) => {
     const id = getId();
     nodes = {
       ...nodes,
@@ -199,7 +202,8 @@ const createCompoundField = (state, action) => {
       ...nodes,
       [action.nodeId]: wrapNode({
         ...state.nodes[action.nodeId],
-        children: (state.nodes[action.nodeId].children || []).concat(groupId),
+        children: (rootNode.children || []).concat(groupId),
+        config: rootNode.config,
       }),
     },
   };

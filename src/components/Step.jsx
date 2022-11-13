@@ -1,9 +1,10 @@
 import Field from "./Field";
 import { useAsstContext } from "../context";
 
-const Step = ({ config, nodeId }) => {
+const Step = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
+  
   const handleNext = () => {
     if (node.error) {
       dispatch({
@@ -11,7 +12,7 @@ const Step = ({ config, nodeId }) => {
       });
       return;
     }
-    const nextStepId = config.next(node.hash);
+    const nextStepId = node.config.next(node.hash);
     dispatch({
       type: "SET_CURRENT_STEP_ID",
       stepId: nextStepId,
@@ -26,12 +27,12 @@ const Step = ({ config, nodeId }) => {
 
   return (
     <div>
-      <div>{config.title}</div>
+      <div>{node.config.title}</div>
       <div>
-        {config.fields.map((fieldConfig, idx) => {
+        {node.children.map((id) => {
           return (
-            <div key={fieldConfig.id}>
-              <Field config={fieldConfig} nodeId={node.children[idx]} />
+            <div key={id}>
+              <Field nodeId={id} />
             </div>
           );
         })}

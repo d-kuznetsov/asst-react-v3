@@ -5,7 +5,7 @@ import CompoundField from "./CompoundField";
 import { useAsstContext } from "../context";
 import { FIELD_TYPES } from "../field-types";
 
-const Field = ({ config, nodeId }) => {
+const Field = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
   const [touched, setTouched] = useState(asstState.touchedStep);
@@ -16,14 +16,14 @@ const Field = ({ config, nodeId }) => {
       type: "SET_FIELD_VALUE",
       nodeId,
       value,
-      config,
+      config: node.config,
     });
     setTouched(true);
   };
 
   let component;
 
-  switch (config.type) {
+  switch (node.config.type) {
     case FIELD_TYPES.TEXT:
       component = <TextField value={value} onUpdate={handleUpdate} />;
       break;
@@ -32,7 +32,7 @@ const Field = ({ config, nodeId }) => {
       break;
     case FIELD_TYPES.COMPOUND:
       component = (
-        <CompoundField config={config} Field={Field} nodeId={nodeId} />
+        <CompoundField Field={Field} nodeId={nodeId} />
       );
       break;
     default:
@@ -43,7 +43,7 @@ const Field = ({ config, nodeId }) => {
     <>
       {!node.hidden && (
         <div>
-          <div>{config.title}</div>
+          <div>{node.config.title}</div>
           {component}
           {(touched || asstState.touchedStep) && node.error && (
             <div className="error">{node.error}</div>
