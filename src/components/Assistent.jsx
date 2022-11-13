@@ -22,7 +22,7 @@ const Assistent = ({ config }) => {
       ) : stepType === "STEP_TYPE_OVERVIEW" ? (
         <Overview nodeId={stepNodeId}/>
       ) : (
-        <Step nodeId={stepNodeId} />
+        <Step nodeId={stepNodeId}/>
       )}
     </div>
   );

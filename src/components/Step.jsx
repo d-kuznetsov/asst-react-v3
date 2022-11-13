@@ -1,10 +1,10 @@
-import Field from "./Field";
 import { useAsstContext } from "../context";
+import Field from "./Field";
 
 const Step = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
-  
+
   const handleNext = () => {
     if (node.error) {
       dispatch({
@@ -12,10 +12,9 @@ const Step = ({ nodeId }) => {
       });
       return;
     }
-    const nextStepId = node.config.next(node.hash);
     dispatch({
       type: "SET_CURRENT_STEP_ID",
-      stepId: nextStepId,
+      stepId: node.config.next(node.hash),
     });
   };
 
@@ -23,7 +22,7 @@ const Step = ({ nodeId }) => {
     dispatch({
       type: "STEP_BACK",
     });
-  }
+  };
 
   return (
     <div>
@@ -38,7 +37,9 @@ const Step = ({ nodeId }) => {
         })}
       </div>
       <div>
-        {!!asstState.stepHistory.length && <button onClick={handleBack}>Prev</button>}
+        {!!asstState.stepHistory.length && (
+          <button onClick={handleBack}>Prev</button>
+        )}
         <button onClick={handleNext}>Next</button>
       </div>
     </div>

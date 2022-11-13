@@ -1,14 +1,16 @@
 import { FIELD_TYPES } from "../field-types";
 import { useAsstContext } from "../context";
 
-const FieldOverview = ({ config, node }) => {
+const FieldOverview = ({ nodeId }) => {
   const { asstState } = useAsstContext();
+  const node = asstState.nodes[nodeId];
+
   let view;
-  switch (config.type) {
+  switch (node.config.type) {
     case FIELD_TYPES.TEXT:
       view = (
         <div>
-          <div>{config.title}</div>
+          <div>{node.config.title}</div>
           <div>{node.value}</div>
         </div>
       );
@@ -16,7 +18,7 @@ const FieldOverview = ({ config, node }) => {
     case FIELD_TYPES.CHECKBOX:
       view = (
         <div>
-          <div>{config.title}</div>
+          <div>{node.config.title}</div>
           <div>{node.value ? "Yes" : "No"}</div>
         </div>
       );
@@ -27,15 +29,8 @@ const FieldOverview = ({ config, node }) => {
           {node.children?.map((listItemId) => {
             return (
               <fieldset key={listItemId}>
-                {config.fields.map((subfield, idx) => {
-                  const nodeId = asstState.nodes[listItemId].children[idx];
-                  return (
-                    <FieldOverview
-                      key={nodeId}
-                      config={subfield}
-                      node={asstState.nodes[nodeId]}
-                    />
-                  );
+                {asstState.nodes[listItemId].children.map((id) => {
+                  return <FieldOverview key={id} nodeId={id} />;
                 })}
               </fieldset>
             );
@@ -60,43 +55,33 @@ const Overview = ({ nodeId }) => {
       type: "SET_CURRENT_STEP_ID",
       stepId: node.config.next(),
     });
-  }
+  };
   const handleBack = () => {
     dispatch({
       type: "STEP_BACK",
     });
-  }
+  };
 
-  const items = rootNode.config.steps
-    .map((step, idx) => {
-      return {
-        stepConfig: step,
-        nodeId: rootNode.children[idx],
-      };
+  const items = rootNode.children
+    .filter((id) => {
+      const stepName = asstState.nodes[id].config.id;
+      return stepHistory.includes(stepName);
     })
-    .filter((item) => {
-      return stepHistory.includes(item.stepConfig.id);
+    .map((id) => {
+      return asstState.nodes[id];
     });
 
   return (
     <div>
       <div>Overview</div>
       <div>
-        {items.map((item) => {
+        {items.map((node) => {
           return (
-            <div key={item.nodeId}>
-              <div>{item.stepConfig.title}</div>
+            <div key={node.id}>
+              <div>{node.config.title}</div>
               <div>
-                {item.stepConfig.fields.map((field, fieldIdx) => {
-                  const nodeId =
-                    asstState.nodes[item.nodeId].children[fieldIdx];
-                  return (
-                    <FieldOverview
-                      key={nodeId}
-                      config={field}
-                      node={asstState.nodes[nodeId]}
-                    />
-                  );
+                {node.children.map((id) => {
+                  return <FieldOverview key={id} nodeId={id} />;
                 })}
               </div>
             </div>
@@ -104,7 +89,9 @@ const Overview = ({ nodeId }) => {
         })}
       </div>
       <div>
-        {!!asstState.stepHistory.length && <button onClick={handleBack}>Prev</button>}
+        {!!asstState.stepHistory.length && (
+          <button onClick={handleBack}>Prev</button>
+        )}
         <button onClick={handleNext}>Next</button>
       </div>
     </div>

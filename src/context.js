@@ -282,7 +282,7 @@ export const updateContext = (state, action) => {
               ...state.nodes[action.nodeId],
               value: action.value,
             },
-            action.config
+            state.nodes[action.nodeId].config,
           ),
         },
       };

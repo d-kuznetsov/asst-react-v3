@@ -1,7 +1,9 @@
 import { useAsstContext } from "../context";
+
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
+
 import EditIcon from "@mui/icons-material/ModeEditOutlineTwoTone";
 import ToDoIcon from "@mui/icons-material/AssignmentTwoTone";
 import SkepedIcon from "@mui/icons-material/LockTwoTone";
@@ -32,7 +34,7 @@ const StepIcon = (props) => {
 };
 
 const StepIndicator = () => {
-  const { asstState, dispatch} = useAsstContext();
+  const { asstState, dispatch } = useAsstContext();
   const { currentStepId, stepHistory, rootNodeId } = asstState;
   const rootNode = asstState.nodes[rootNodeId];
   const activeStepIdx = rootNode.config.steps.findIndex(
@@ -41,9 +43,9 @@ const StepIndicator = () => {
   const handleStepEdit = (stepId) => {
     dispatch({
       type: "EDIT_STEP",
-      stepId
-    })
-  }
+      stepId,
+    });
+  };
 
   return (
     <Stepper activeStep={activeStepIdx} alternativeLabel>
@@ -55,7 +57,7 @@ const StepIndicator = () => {
               StepIconProps={{
                 stepId: step.id,
                 stepHistory,
-                onEdit: handleStepEdit
+                onEdit: handleStepEdit,
               }}
             >
               {step.title}
