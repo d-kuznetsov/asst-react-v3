@@ -1,6 +1,8 @@
 import StepIndicator from "./StepIndicator";
 import Step from "./Step";
 import Overview from "./Overview";
+import LoadingIndicator from "./LoadingIndicator";
+import Box from "@mui/material/Box";
 import { useAsstContext } from "../context";
 
 const Assistent = ({ config }) => {
@@ -15,16 +17,17 @@ const Assistent = ({ config }) => {
   const { type: stepType } = stepConfig;
 
   return (
-    <div>
+    <Box position="relative">
+      <LoadingIndicator />
       <StepIndicator />
       {stepType === "STEP_TYPE_DONE" ? (
         <div>Done</div>
       ) : stepType === "STEP_TYPE_OVERVIEW" ? (
-        <Overview nodeId={stepNodeId}/>
+        <Overview nodeId={stepNodeId} />
       ) : (
-        <Step nodeId={stepNodeId}/>
+        <Step nodeId={stepNodeId} />
       )}
-    </div>
+    </Box>
   );
 };
 

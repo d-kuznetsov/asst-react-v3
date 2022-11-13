@@ -178,6 +178,7 @@ export const createInitialContext = (config) => {
   ctx.currentStepId = config.steps[0].id;
   ctx.touchedStep = false;
   ctx.stepHistory = [];
+  ctx.isLoading = false;
 
   asstCtxRef.value = ctx;
   return asstCtxRef.value;
@@ -253,6 +254,7 @@ const SET_TOUCHED = "SET_TOUCHED";
 const STEP_BACK = "STEP_BACK";
 const DELETE_COMPOUND_FIELD = "DELETE_COMPOUND_FIELD";
 const EDIT_STEP = "EDIT_STEP";
+const SET_LOADING = "SET_LOADING"
 
 export const updateContext = (state, action) => {
   let newState;
@@ -309,6 +311,12 @@ export const updateContext = (state, action) => {
       newState = {
         ...state,
         touchedStep: true,
+      };
+      break;
+    case SET_LOADING:
+      newState = {
+        ...state,
+        isLoading: action.value,
       };
       break;
     default:

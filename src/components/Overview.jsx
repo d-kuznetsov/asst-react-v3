@@ -50,6 +50,26 @@ const Overview = ({ nodeId }) => {
   const rootNode = asstState.nodes[rootNodeId];
   const node = asstState.nodes[nodeId];
 
+  const handleSubmit = async () => {
+    try {
+      dispatch({
+        type: "SET_LOADING",
+        value: true,
+      });
+      await node.config.submit();
+      dispatch({
+        type: "SET_CURRENT_STEP_ID",
+        stepId: node.config.next(),
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      dispatch({
+        type: "SET_LOADING",
+        value: false,
+      });
+    }
+  };
   const handleNext = () => {
     dispatch({
       type: "SET_CURRENT_STEP_ID",
@@ -92,7 +112,7 @@ const Overview = ({ nodeId }) => {
         {!!asstState.stepHistory.length && (
           <button onClick={handleBack}>Prev</button>
         )}
-        <button onClick={handleNext}>Next</button>
+        <button onClick={handleSubmit}>Next</button>
       </div>
     </div>
   );

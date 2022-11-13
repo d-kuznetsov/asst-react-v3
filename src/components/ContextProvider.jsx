@@ -11,7 +11,6 @@ const ContextProvider = ({ children, config }) => {
     }),
     [state, dispatch]
   );
-  // console.log('stepHistory', value.asstState.stepHistory)
   return <AsstContext.Provider value={value}>{children}</AsstContext.Provider>;
 };
 
