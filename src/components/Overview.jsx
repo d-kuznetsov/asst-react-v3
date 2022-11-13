@@ -49,15 +49,16 @@ const FieldOverview = ({ config, node }) => {
   return view;
 };
 
-const Overview = ({ asstConfig, stepConfig }) => {
+const Overview = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const { stepHistory, rootNodeId } = asstState;
   const rootNode = asstState.nodes[rootNodeId];
+  const node = asstState.nodes[nodeId];
 
   const handleNext = () => {
     dispatch({
       type: "SET_CURRENT_STEP_ID",
-      stepId: stepConfig.next(),
+      stepId: node.config.next(),
     });
   }
   const handleBack = () => {
@@ -66,7 +67,7 @@ const Overview = ({ asstConfig, stepConfig }) => {
     });
   }
 
-  const items = asstConfig.steps
+  const items = rootNode.config.steps
     .map((step, idx) => {
       return {
         stepConfig: step,

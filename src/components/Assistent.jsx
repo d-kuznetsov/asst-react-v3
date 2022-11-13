@@ -16,13 +16,13 @@ const Assistent = ({ config }) => {
 
   return (
     <div>
-      <StepIndicator config={config} />
+      <StepIndicator />
       {stepType === "STEP_TYPE_DONE" ? (
         <div>Done</div>
       ) : stepType === "STEP_TYPE_OVERVIEW" ? (
-        <Overview asstConfig={config} stepConfig={stepConfig}/>
+        <Overview nodeId={stepNodeId}/>
       ) : (
-        <Step config={stepConfig} nodeId={stepNodeId} />
+        <Step nodeId={stepNodeId} />
       )}
     </div>
   );

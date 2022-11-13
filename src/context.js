@@ -159,7 +159,7 @@ export const createInitialContext = (config) => {
     [rootId]: createNode({ 
       id: rootId, 
       children: rootList,
-      // config
+      config
     }), 
   };
   ctx.rootNodeId = rootId;

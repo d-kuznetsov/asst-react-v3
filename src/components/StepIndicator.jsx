@@ -31,10 +31,11 @@ const StepIcon = (props) => {
   );
 };
 
-const StepIndicator = ({ config }) => {
+const StepIndicator = () => {
   const { asstState, dispatch} = useAsstContext();
-  const { currentStepId, stepHistory } = asstState;
-  const activeStepIdx = config.steps.findIndex(
+  const { currentStepId, stepHistory, rootNodeId } = asstState;
+  const rootNode = asstState.nodes[rootNodeId];
+  const activeStepIdx = rootNode.config.steps.findIndex(
     ({ id }) => id === currentStepId
   );
   const handleStepEdit = (stepId) => {
@@ -46,7 +47,7 @@ const StepIndicator = ({ config }) => {
 
   return (
     <Stepper activeStep={activeStepIdx} alternativeLabel>
-      {config.steps.map((step) => {
+      {rootNode.config.steps.map((step) => {
         return (
           <Step key={step.id}>
             <StepLabel
