@@ -56,7 +56,7 @@ const Overview = ({ nodeId }) => {
         type: "SET_LOADING",
         value: true,
       });
-      await node.config.submit();
+      await node.config.submit(rootNode.value);
       dispatch({
         type: "SET_CURRENT_STEP_ID",
         stepId: node.config.next(),

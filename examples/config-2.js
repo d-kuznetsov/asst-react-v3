@@ -6,10 +6,10 @@ const sendData = (data) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
-      console.dir(data)
-    }, 2000)
-  })
-}
+      console.dir(data);
+    }, 2000);
+  });
+};
 
 export default {
   steps: [
@@ -27,6 +27,24 @@ export default {
           title: "Read?",
           type: FIELD_TYPES.TEXT,
         },
+
+        {
+          id: "f3",
+          title: "List",
+          type: FIELD_TYPES.COMPOUND,
+          fields: [
+            {
+              id: "sf1",
+              title: "Subfield 1",
+              type: FIELD_TYPES.TEXT,
+            },
+            {
+              id: "sf2",
+              title: "Subfield 2",
+              type: FIELD_TYPES.CHECKBOX,
+            },
+          ],
+        },
       ],
       next: () => {
         return "overview";
@@ -39,9 +57,9 @@ export default {
       next: () => {
         return "done";
       },
-      submit: async () => {
-        await sendData()
-      }
+      submit: async (data) => {
+        await sendData(data);
+      },
     },
     {
       id: "done",
