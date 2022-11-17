@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import uniqid from "uniqid";
-import { getFieldDefaultValue } from "./field-types";
+import { getFieldDefaultValue, FIELD_TYPES } from "./field-types";
 
 export const getId = () => uniqid();
 
@@ -27,6 +27,12 @@ const getHash = (nodeId, asstCtx) => {
   return hash;
 };
 
+const getSet = (nodeId, asstCtx) => {
+  return asstCtx.nodes[nodeId].children.map((childId) => {
+    return asstCtx.nodes[childId].value;
+  });
+};
+
 const wrapNode = (node, config = null) => {
   return new Proxy(node, {
     get(node, key) {
@@ -45,6 +51,13 @@ const wrapNode = (node, config = null) => {
         return getHash(node.id, asstCtxRef.value);
       } else if (key === "config" && config) {
         return config;
+      } else if (key === "value") {
+        if (node.type === "map") {
+          return getHash(node.id, asstCtxRef.value);
+        } else if (node.type === "set") {
+          return getSet(node.id, asstCtxRef.value);
+        }
+        return node.value;
       }
       return node[key];
     },
@@ -56,6 +69,7 @@ export const createNode = ({
   children = null,
   parentId = null,
   config = null,
+  type,
 }) => {
   const node = {
     id: id || getId(),
@@ -63,6 +77,7 @@ export const createNode = ({
     children,
     value: children?.length ? null : getFieldDefaultValue(config.type),
     name: config?.id || null,
+    type,
   };
 
   return wrapNode(node, config);
@@ -83,6 +98,7 @@ const createCompoundFieldNodes = (ctx, compoundField, stepId) => {
         parentId: listItemId,
         config: fieldConfig,
         ctx,
+        type: "value",
       }),
     };
   });
@@ -95,6 +111,7 @@ const createCompoundFieldNodes = (ctx, compoundField, stepId) => {
       children: listItemChildren,
       // ??? config
       ctx,
+      type: "map",
     }),
     [listId]: createNode({
       id: listId,
@@ -102,6 +119,7 @@ const createCompoundFieldNodes = (ctx, compoundField, stepId) => {
       children: [listItemId],
       config: compoundField,
       ctx,
+      type: "set",
     }),
   };
 
@@ -115,33 +133,31 @@ export const createInitialContext = (config) => {
 
   const rootId = getId();
   const rootList = [];
-  config.steps
-    .forEach((step) => {
-      const children = [];
-      let stepId = getId();
+  config.steps.forEach((step) => {
+    const children = [];
+    let stepId = getId();
 
-      if (
-        step.type === "STEP_TYPE_OVERVIEW" ||
-        step.type === "STEP_TYPE_DONE"
-      ) {
-        ctx.nodes = {
-          ...ctx.nodes,
-          [stepId]: createNode({
-            id: stepId,
-            config: step,
-          }),
-        };
-        rootList.push(stepId)
-        return;
-      }
+    if (step.type === "STEP_TYPE_OVERVIEW" || step.type === "STEP_TYPE_DONE") {
+      ctx.nodes = {
+        ...ctx.nodes,
+        [stepId]: createNode({
+          id: stepId,
+          config: step,
+          type: "auxiliary",
+        }),
+      };
+      rootList.push(stepId);
+      return;
+    }
 
-      step.fields.forEach((field) => {
-        if (field.options?.atLeastOne) {
-          const compoundFieldId = createCompoundFieldNodes(ctx, field, stepId);
-          children.push(compoundFieldId);
-        } else {
-          const fieldId = getId();
-          children.push(fieldId);
+    step.fields.forEach((field) => {
+      if (field.options?.atLeastOne) {
+        const compoundFieldId = createCompoundFieldNodes(ctx, field, stepId);
+        children.push(compoundFieldId);
+      } else {
+        const fieldId = getId();
+        children.push(fieldId);
+        if (field.type === FIELD_TYPES.COMPOUND) {
           ctx.nodes = {
             ...ctx.nodes,
             [fieldId]: createNode({
@@ -149,22 +165,37 @@ export const createInitialContext = (config) => {
               parentId: stepId,
               config: field,
               ctx,
+              type: "set",
+              children: [],
+            }),
+          };
+        } else {
+          ctx.nodes = {
+            ...ctx.nodes,
+            [fieldId]: createNode({
+              id: fieldId,
+              parentId: stepId,
+              config: field,
+              ctx,
+              type: "value",
             }),
           };
         }
-      });
-
-      rootList.push(stepId);
-      ctx.nodes = {
-        ...ctx.nodes,
-        [stepId]: createNode({
-          id: stepId,
-          children,
-          parentId: rootId,
-          config: step,
-        }),
-      };
+      }
     });
+
+    rootList.push(stepId);
+    ctx.nodes = {
+      ...ctx.nodes,
+      [stepId]: createNode({
+        id: stepId,
+        children,
+        parentId: rootId,
+        config: step,
+        type: "map",
+      }),
+    };
+  });
 
   ctx.nodes = {
     ...ctx.nodes,
@@ -172,6 +203,7 @@ export const createInitialContext = (config) => {
       id: rootId,
       children: rootList,
       config,
+      type: "set",
     }),
   };
   ctx.rootNodeId = rootId;
@@ -197,7 +229,7 @@ const createCompoundField = (state, action) => {
     const id = getId();
     nodes = {
       ...nodes,
-      [id]: createNode({ id, parentId: groupId, config: field }),
+      [id]: createNode({ id, parentId: groupId, config: field, type: "value" }),
     };
     children.push(id);
   });
@@ -205,9 +237,9 @@ const createCompoundField = (state, action) => {
     id: groupId,
     children,
     parentId: action.nodeId,
+    type: "map",
     // config
   });
-
   return {
     ...state,
     nodes: {
@@ -254,7 +286,7 @@ const SET_TOUCHED = "SET_TOUCHED";
 const STEP_BACK = "STEP_BACK";
 const DELETE_COMPOUND_FIELD = "DELETE_COMPOUND_FIELD";
 const EDIT_STEP = "EDIT_STEP";
-const SET_LOADING = "SET_LOADING"
+const SET_LOADING = "SET_LOADING";
 
 export const updateContext = (state, action) => {
   let newState;
@@ -327,5 +359,5 @@ export const updateContext = (state, action) => {
 };
 
 export const useAsstReducer = (config) => {
-  return useReducer(updateContext, createInitialContext(config));
+  return useReducer(updateContext, null, () => createInitialContext(config));
 };
