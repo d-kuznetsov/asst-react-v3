@@ -1,4 +1,4 @@
-import { useAsstContext } from "../context";
+import { useAsstContext } from "../../context";
 
 const CompoundField = ({ Field, nodeId }) => {
   const { asstState, dispatch } = useAsstContext();

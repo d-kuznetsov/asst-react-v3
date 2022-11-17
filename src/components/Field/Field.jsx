@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useAsstContext } from "../context";
-import { FIELD_TYPES } from "../field-types";
+import { useAsstContext } from "../../context";
+import { FIELD_TYPES } from "../../field-types";
 
-import TextField from "./base/TextField";
-import Checkbox from "./base/Checkbox";
+import TextField from "./TextField";
+import Checkbox from "./Checkbox";
 import CompoundField from "./CompoundField";
 
 const Field = ({ nodeId }) => {
