@@ -26,6 +26,9 @@ export default {
           id: "f2",
           title: "Read?",
           type: FIELD_TYPES.TEXT,
+          validate: (value) => {
+            return value === "a" ? "cannot be an a" : null;
+          }
         },
 
         {
