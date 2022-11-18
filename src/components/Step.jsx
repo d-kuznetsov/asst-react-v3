@@ -1,4 +1,9 @@
 import { useAsstContext } from "../context";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+
 import Field from "./Field";
 
 const Step = ({ nodeId }) => {
@@ -25,24 +30,22 @@ const Step = ({ nodeId }) => {
   };
 
   return (
-    <div>
-      <div>{node.config.title}</div>
-      <div>
+    <Card sx={{ py: 1 }}>
+      <Box typography="h5">{node.config.title}</Box>
+      <Box>
         {node.children.map((id) => {
-          return (
-            <div key={id}>
-              <Field nodeId={id} />
-            </div>
-          );
+          return <Field key={id} nodeId={id} />;
         })}
-      </div>
-      <div>
+      </Box>
+      <Box sx={{
+        mt: 1,
+      }}>
         {!!asstState.stepHistory.length && (
-          <button onClick={handleBack}>Prev</button>
+          <Button size="large" onClick={handleBack}>Prev</Button>
         )}
-        <button onClick={handleNext}>Next</button>
-      </div>
-    </div>
+        <Button  variant="contained" size="large" onClick={handleNext}>Next</Button>
+      </Box>
+    </Card>
   );
 };
 
