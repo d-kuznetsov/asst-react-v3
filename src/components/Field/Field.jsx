@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useAsstContext } from "../../context";
 import { FIELD_TYPES } from "../../field-types";
 
+import { Box } from "../base";
+import ErrorIcon from "@mui/icons-material/ErrorTwoTone";
+
 import TextField from "./TextField";
 import Checkbox from "./Checkbox";
 import CompoundField from "./CompoundField";
@@ -36,16 +39,41 @@ const Field = ({ nodeId }) => {
       component = <span>Unknown component</span>;
   }
 
+  const showError = (touched || asstState.touchedStep) && node.error;
+
   return (
     <>
       {!node.hidden && (
-        <div>
-          <div>{node.config.title}</div>
+        <Box
+          sx={{
+            px: 1,
+            border: 2,
+            borderRadius: 1,
+            borderColor: showError ? "error.light" : "background.default",
+          }}
+        >
+          <Box typography="subtitle1">{node.config.title}</Box>
           {component}
-          {(touched || asstState.touchedStep) && node.error && (
-            <div className="error">{node.error}</div>
+          {showError && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                color: "error.dark",
+              }}
+              typography="subtitle2"
+            >
+              <ErrorIcon
+                sx={{
+                  mr: 1,
+                  color: "error.main",
+                  fontSize: "small",
+                }}
+              />
+              {node.error}
+            </Box>
           )}
-        </div>
+        </Box>
       )}
     </>
   );
