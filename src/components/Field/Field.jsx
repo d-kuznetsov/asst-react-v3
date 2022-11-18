@@ -12,8 +12,8 @@ import CompoundField from "./CompoundField";
 const Field = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
-
   const [touched, setTouched] = useState(asstState.touchedStep);
+  const showError = (touched || asstState.touchedStep) && node.error;
 
   const handleUpdate = (value) => {
     dispatch({
@@ -38,8 +38,6 @@ const Field = ({ nodeId }) => {
     default:
       component = <span>Unknown component</span>;
   }
-
-  const showError = (touched || asstState.touchedStep) && node.error;
 
   return (
     <>
