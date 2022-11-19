@@ -4,7 +4,8 @@ import MuiFormControlLabel from "@mui/material/FormControlLabel";
 
 function Checkbox(props) {
   // console.log("RENDER Checkbox");
-  const { value, size, label, onUpdate } = props;
+  const { value, size, onUpdate, options } = props;
+  const { label = "" } = options;
   const handleChange = ({ target }) => {
     onUpdate(target.checked);
   };

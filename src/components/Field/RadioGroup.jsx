@@ -5,7 +5,8 @@ import MuiFormControlLabel from "@mui/material/FormControlLabel";
 
 function RadioGroup(props) {
   // console.log("RENDER RadioGroup");
-  const { value, direction, size, items, onUpdate } = props;
+  const { value, direction, size, options, onUpdate } = props;
+  const { items } = options;
   const handleChange = ({ target }) => {
     onUpdate(target.value);
   };

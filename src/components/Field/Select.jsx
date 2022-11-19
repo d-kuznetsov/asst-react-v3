@@ -3,7 +3,8 @@ import MuiTextField from "@mui/material/TextField";
 import MuiMenuItem from "@mui/material/MenuItem";
 
 function Select(props) {
-  const { value, size, items, onUpdate } = props;
+  const { value, size, error, options, onUpdate } = props;
+  const { items, label } = options;
   const handleChange = ({ target }) => {
     onUpdate(target.value);
   };
@@ -12,6 +13,8 @@ function Select(props) {
       value={value}
       onChange={handleChange}
       size={size}
+      error={error}
+      label={label}
       select
       fullWidth
     >

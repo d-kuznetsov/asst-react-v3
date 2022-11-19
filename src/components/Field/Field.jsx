@@ -7,13 +7,18 @@ import ErrorIcon from "@mui/icons-material/ErrorTwoTone";
 
 import TextField from "./TextField";
 import Checkbox from "./Checkbox";
+import Select from "./Select";
+import CheckboxGroup from "./CheckboxGroup";
+import RadioGroup from "./RadioGroup";
+import Slider from "./Slider";
+import FileUpload from "./FileUpload";
 import CompoundField from "./CompoundField";
 
 const Field = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
   const node = asstState.nodes[nodeId];
   const [touched, setTouched] = useState(asstState.touchedStep);
-  const showError = (touched || asstState.touchedStep) && node.error;
+  const showError = (touched || asstState.touchedStep) && !!node.error;
 
   const handleUpdate = (value) => {
     dispatch({
@@ -27,10 +32,57 @@ const Field = ({ nodeId }) => {
   let component;
   switch (node.config.type) {
     case FIELD_TYPES.TEXT:
-      component = <TextField value={node.value} onUpdate={handleUpdate} />;
+      component = (
+        <TextField
+          value={node.value}
+          error={showError}
+          options={node.config.options}
+          onUpdate={handleUpdate}
+        />
+      );
+      break;
+    case FIELD_TYPES.SELECT:
+      component = (
+        <Select
+          value={node.value}
+          error={showError}
+          options={node.config.options}
+          onUpdate={handleUpdate}
+        />
+      );
+      break;
+    case FIELD_TYPES.SLIDER:
+      component = <Slider value={node.value} onUpdate={handleUpdate} />;
       break;
     case FIELD_TYPES.CHECKBOX:
-      component = <Checkbox value={node.value} onUpdate={handleUpdate} />;
+      component = (
+        <Checkbox
+          value={node.value}
+          options={node.config.options}
+          onUpdate={handleUpdate}
+        />
+      );
+      break;
+    case FIELD_TYPES.CHECKBOX_GROUP:
+      component = (
+        <CheckboxGroup
+          value={node.value}
+          options={node.config.options}
+          onUpdate={handleUpdate}
+        />
+      );
+      break;
+    case FIELD_TYPES.RADIO_GROUP:
+      component = (
+        <RadioGroup
+          value={node.value}
+          options={node.config.options}
+          onUpdate={handleUpdate}
+        />
+      );
+      break;
+    case FIELD_TYPES.FILE_UPLOAD:
+      component = <FileUpload value={node.value} onUpdate={handleUpdate} />;
       break;
     case FIELD_TYPES.COMPOUND:
       component = <CompoundField Field={Field} nodeId={nodeId} />;

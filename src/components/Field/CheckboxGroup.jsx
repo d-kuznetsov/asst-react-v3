@@ -5,7 +5,8 @@ import MuiCheckbox from "@mui/material/Checkbox";
 
 function CheckboxGroup(props) {
   // console.log("RENDER CheckboxGroup");
-  const { value, items, size, onUpdate } = props;
+  const { value, options, size, onUpdate } = props;
+  const { items } = options;
   const handleChange = ({ target }) => {
     onUpdate({
       ...value,
