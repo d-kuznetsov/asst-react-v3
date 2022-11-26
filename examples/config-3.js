@@ -17,6 +17,8 @@ export default {
             type: "number",
             multiline: true,
           },
+          info: "Info text",
+          columns: 1,
           validate: (value) => {
             return value === "a" ? "Must not be an a" : null;
           },
@@ -42,6 +44,8 @@ export default {
               },
             ],
           },
+          info: "Info text",
+          columns: 1,
           validate: (value) => {
             return value === "c" ? "Cannot be a c" : null;
           },

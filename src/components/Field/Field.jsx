@@ -13,6 +13,8 @@ import RadioGroup from "./RadioGroup";
 import Slider from "./Slider";
 import FileUpload from "./FileUpload";
 import CompoundField from "./CompoundField";
+import Info from "../Info";
+import Grid from "@mui/material/Grid";
 
 const Field = ({ nodeId }) => {
   const { asstState, dispatch } = useAsstContext();
@@ -94,36 +96,47 @@ const Field = ({ nodeId }) => {
   return (
     <>
       {!node.hidden && (
-        <Box
-          sx={{
-            px: 1,
-            border: 2,
-            borderRadius: 1,
-            borderColor: showError ? "error.light" : "background.default",
-          }}
-        >
-          <Box typography="subtitle1">{node.config.title}</Box>
-          {component}
-          {showError && (
+        <Grid item xs={2} sm={node.config.columns || 2}>
+          <Box
+            sx={{
+              border: 2,
+              borderRadius: 1,
+              borderColor: showError ? "error.light" : "background.default",
+              px: 1,
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                color: "error.dark",
               }}
-              typography="subtitle2"
+              typography="subtitle1"
             >
-              <ErrorIcon
-                sx={{
-                  mr: 1,
-                  color: "error.main",
-                  fontSize: "small",
-                }}
-              />
-              {node.error}
+              <span> {node.config.title}</span>
+              {!!node.config.info && <Info text={node.config.info} />}
             </Box>
-          )}
-        </Box>
+            {component}
+            {showError && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "error.dark",
+                }}
+                typography="subtitle2"
+              >
+                <ErrorIcon
+                  sx={{
+                    mr: 1,
+                    color: "error.main",
+                    fontSize: "small",
+                  }}
+                />
+                {node.error}
+              </Box>
+            )}
+          </Box>
+        </Grid>
       )}
     </>
   );
