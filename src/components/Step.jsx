@@ -20,7 +20,7 @@ const Step = ({ nodeId }) => {
     }
     dispatch({
       type: "SET_CURRENT_STEP_ID",
-      stepId: node.config.next(node.hash),
+      stepId: node.config.next(node.value),
     });
   };
 

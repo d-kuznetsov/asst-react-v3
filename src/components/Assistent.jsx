@@ -4,6 +4,7 @@ import Overview from "./Overview";
 import LoadingIndicator from "./LoadingIndicator";
 import Box from "@mui/material/Box";
 import ScopedCssBaseline from "@mui/material/ScopedCssBaseline";
+import Container from '@mui/material/Container';
 import { useAsstContext } from "../context";
 
 const Assistent = ({ config }) => {
@@ -19,7 +20,12 @@ const Assistent = ({ config }) => {
 
   return (
     <ScopedCssBaseline>
-      <Box position="relative">
+      <Container fixed maxWidth="md" sx={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch"
+      }}>
         <LoadingIndicator />
         <StepIndicator />
         {stepType === "STEP_TYPE_DONE" ? (
@@ -29,7 +35,7 @@ const Assistent = ({ config }) => {
         ) : (
           <Step nodeId={stepNodeId} />
         )}
-      </Box>
+      </Container>
     </ScopedCssBaseline>
   );
 };

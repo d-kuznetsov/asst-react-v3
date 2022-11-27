@@ -99,6 +99,8 @@ const Field = ({ nodeId }) => {
         <Grid item xs={2} sm={node.config.columns || 2}>
           <Box
             sx={{
+              display: "flex",
+              flexDirection: "column",
               border: 2,
               borderRadius: 1,
               borderColor: showError ? "error.light" : "background.default",
@@ -116,7 +118,7 @@ const Field = ({ nodeId }) => {
               {!!node.config.info && <Info text={node.config.info} />}
             </Box>
             {component}
-            {showError && (
+            {showError && !node.children && (
               <Box
                 sx={{
                   display: "flex",

@@ -1,5 +1,10 @@
 import { FIELD_TYPES } from "../field-types";
 import { useAsstContext } from "../context";
+import ContentWrapper from "./ContentWrapper";
+
+import Stack from "@mui/material/Stack";
+import Card from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 
 const FieldOverview = ({ nodeId }) => {
   const { asstState } = useAsstContext();
@@ -70,12 +75,6 @@ const Overview = ({ nodeId }) => {
       });
     }
   };
-  const handleNext = () => {
-    dispatch({
-      type: "SET_CURRENT_STEP_ID",
-      stepId: node.config.next(),
-    });
-  };
   const handleBack = () => {
     dispatch({
       type: "STEP_BACK",
@@ -92,29 +91,29 @@ const Overview = ({ nodeId }) => {
     });
 
   return (
-    <div>
-      <div>Overview</div>
-      <div>
+    <ContentWrapper
+      onBack={handleBack}
+      onNext={handleSubmit}
+      stepHistory={asstState.stepHistory}
+      title="Overview"
+    >
+      <Stack spacing={2} sx={{
+        px: 2
+      }}>
         {items.map((node) => {
           return (
-            <div key={node.id}>
-              <div>{node.config.title}</div>
+            <Card key={node.id} elevation={3}>
+              <Box typography="h5">{node.config.title}</Box>
               <div>
                 {node.children.map((id) => {
                   return <FieldOverview key={id} nodeId={id} />;
                 })}
               </div>
-            </div>
+            </Card>
           );
         })}
-      </div>
-      <div>
-        {!!asstState.stepHistory.length && (
-          <button onClick={handleBack}>Prev</button>
-        )}
-        <button onClick={handleSubmit}>Next</button>
-      </div>
-    </div>
+      </Stack>
+    </ContentWrapper>
   );
 };
 

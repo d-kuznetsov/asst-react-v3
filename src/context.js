@@ -265,12 +265,15 @@ const deleteCompoundField = (state, action) => {
 
   newNodes = {
     ...newNodes,
-    [parentId]: wrapNode({
-      ...newNodes[parentId],
-      children: newNodes[parentId].children.filter(
-        (childId) => childId !== nodeId
-      ),
-    }),
+    [parentId]: wrapNode(
+      {
+        ...newNodes[parentId],
+        children: newNodes[parentId].children.filter(
+          (childId) => childId !== nodeId
+        ),
+      },
+      newNodes[parentId].config
+    ),
   };
 
   return {

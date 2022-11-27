@@ -26,10 +26,14 @@ const CompoundField = ({ Field, nodeId }) => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        py: 1,
+      }}
+    >
       {!!node.children?.length && (
         <Stack
-          spacing={1}
+          spacing={2}
           sx={{
             p: 1,
             backgroundColor: "grey.100",
@@ -38,13 +42,21 @@ const CompoundField = ({ Field, nodeId }) => {
         >
           {node.children?.map((id) => {
             return (
-              <Card key={id}>
+              <Card
+                key={id}
+                sx={{
+                  p: 1,
+                  pb: 2,
+                }}
+              >
                 <IconButton onClick={() => handleDelete(id)}>
                   <DeleteIcon fontSize="medium" />
                 </IconButton>
-                {asstState.nodes[id].children.map((id) => {
-                  return <Field key={id} nodeId={id} />;
-                })}
+                <Stack spacing={1}>
+                  {asstState.nodes[id].children.map((id) => {
+                    return <Field key={id} nodeId={id} />;
+                  })}
+                </Stack>
               </Card>
             );
           })}
@@ -60,7 +72,7 @@ const CompoundField = ({ Field, nodeId }) => {
           Add
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
 
