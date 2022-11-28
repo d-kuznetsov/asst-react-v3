@@ -5,7 +5,7 @@ const ERROR_MESSAGE = "Bitte geben Sie die gewünschte Information ein.";
 
 export default {
   steps: [
-    /*     {
+    {
       id: "Information about the regulation",
       title: "Angaben zur Verordnung",
       fields: [
@@ -126,8 +126,10 @@ export default {
                 value: "Alternative Arzneimittel",
               },
               {
-                label: "Arzneimittel, das bei einer Notfallbehandlung privat verordnet wurde",
-                value: "Arzneimittel, das bei einer Notfallbehandlung privat verordnet wurde",
+                label:
+                  "Arzneimittel, das bei einer Notfallbehandlung privat verordnet wurde",
+                value:
+                  "Arzneimittel, das bei einer Notfallbehandlung privat verordnet wurde",
               },
               {
                 label: "Arzneimittel im Rahmen einer Schwangerschaft",
@@ -137,15 +139,15 @@ export default {
                 label: "Sonstige Arzneimittel",
                 value: "Sonstige Arzneimittel",
               },
-            ]
-          }
-        }
+            ],
+          },
+        },
       ],
       next: () => {
         return "Angaben zu den Arzneimitteln";
       },
-    }, */
-    /*     {
+    },
+    {
       id: "Angaben zu den Arzneimitteln",
       title: "Angaben zu den Arzneimitteln",
       fields: [
@@ -192,8 +194,8 @@ export default {
       next: () => {
         return "Hochzuladende Dokumente";
       },
-    }, */
-    /*     {
+    },
+    {
       id: "Hochzuladende Dokumente",
       title: "Hochzuladende Dokumente",
       fields: [
@@ -224,7 +226,7 @@ export default {
       next: () => {
         return "Erstattungsdaten";
       },
-    }, */
+    },
     {
       id: "Erstattungsdaten",
       title: "Erstattungsdaten",
@@ -248,7 +250,9 @@ export default {
         },
       ],
       next: (stepMap) => {
-        return stepMap["Bankverbindung"] === "DEXX" ? "overview" : "Bankverbindung";
+        return stepMap["Bankverbindung"] === "DEXX"
+          ? "overview"
+          : "Bankverbindung";
       },
     },
     {

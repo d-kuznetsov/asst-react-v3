@@ -10,43 +10,74 @@ const FieldOverview = ({ nodeId }) => {
   const { asstState } = useAsstContext();
   const node = asstState.nodes[nodeId];
 
-  let view;
+  let fieldValue;
   switch (node.config.type) {
     case FIELD_TYPES.TEXT:
-      view = (
-        <div>
-          <div>{node.config.title}</div>
-          <div>{node.value}</div>
-        </div>
-      );
+    case FIELD_TYPES.SLIDER:
+      fieldValue = node.value;
+      break;
+    case FIELD_TYPES.SELECT:
+    case FIELD_TYPES.RADIO_GROUP:
+      fieldValue = node.config.options.items.find(
+        (item) => item.value === node.value
+      )?.label;
       break;
     case FIELD_TYPES.CHECKBOX:
-      view = (
-        <div>
-          <div>{node.config.title}</div>
-          <div>{node.value ? "Yes" : "No"}</div>
-        </div>
-      );
+      fieldValue = node.value ? "Yes" : "No";
+      break;
+    case FIELD_TYPES.CHECKBOX_GROUP:
+      fieldValue = node.config.options.items
+        .filter((item) => {
+          return node.value[item.value];
+        })
+        .map((item) => item.label)
+        .join(", ");
+      break;
+    case FIELD_TYPES.FILE_UPLOAD:
+      fieldValue = node.value.map((file) => file.name).join(", ");
       break;
     case FIELD_TYPES.COMPOUND:
-      view = (
-        <div>
+      fieldValue = (
+        <Stack
+          spacing={2}
+          sx={{
+            p: 1,
+          }}
+        >
           {node.children?.map((listItemId) => {
             return (
-              <fieldset key={listItemId}>
+              <Card
+                key={listItemId}
+                sx={{
+                  p: 1,
+                  backgroundColor: "grey.100",
+                }}
+              >
                 {asstState.nodes[listItemId].children.map((id) => {
                   return <FieldOverview key={id} nodeId={id} />;
                 })}
-              </fieldset>
+              </Card>
             );
           })}
-        </div>
+        </Stack>
       );
       break;
     default:
-      view = <div>Unknown field type</div>;
+      fieldValue = "Unknown field type";
   }
-  return view;
+  return (
+    <Box>
+      <Box
+        typography="body1"
+        sx={{
+          fontWeight: "bold",
+        }}
+      >
+        {node.config.title}
+      </Box>
+      <Box typography="body1">{fieldValue}</Box>
+    </Box>
+  );
 };
 
 const Overview = ({ nodeId }) => {
@@ -97,18 +128,36 @@ const Overview = ({ nodeId }) => {
       stepHistory={asstState.stepHistory}
       title="Overview"
     >
-      <Stack spacing={2} sx={{
-        px: 2
-      }}>
+      <Stack
+        spacing={2}
+        sx={{
+          px: 2,
+        }}
+      >
         {items.map((node) => {
           return (
-            <Card key={node.id} elevation={3}>
-              <Box typography="h5">{node.config.title}</Box>
-              <div>
+            <Card
+              key={node.id}
+              elevation={3}
+              sx={{
+                p: 1,
+              }}
+            >
+              <Box
+                typography="h6"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  mb: 1,
+                }}
+              >
+                {node.config.title}
+              </Box>
+              <Stack spacing={2}>
                 {node.children.map((id) => {
                   return <FieldOverview key={id} nodeId={id} />;
                 })}
-              </div>
+              </Stack>
             </Card>
           );
         })}

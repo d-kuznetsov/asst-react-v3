@@ -7,7 +7,10 @@ const ContentWrapper = (props) => {
   
   return (
     <Card sx={{ py: 1 }}>
-      <Box typography="h5">{title}</Box>
+      <Box typography="h5" sx={{
+        mb: 1,
+        textAlign: "center",
+      }}>{title}</Box>
       {children}
       <Box
         sx={{

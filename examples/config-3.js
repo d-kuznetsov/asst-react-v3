@@ -124,7 +124,18 @@ export default {
         },
       ],
       next: () => {
+        return "overview";
+      },
+    },
+    {
+      id: "overview",
+      title: "Overview",
+      type: "STEP_TYPE_OVERVIEW",
+      next: () => {
         return "done";
+      },
+      submit: async (data) => {
+        await new Promise((resolve) => setTimeout(resolve, 2000, data));
       },
     },
     {

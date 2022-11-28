@@ -24,7 +24,8 @@ const Assistent = ({ config }) => {
         position: "relative",
         display: "flex",
         flexDirection: "column",
-        alignItems: "stretch"
+        alignItems: "stretch",
+        textAlign: "left",
       }}>
         <LoadingIndicator />
         <StepIndicator />
